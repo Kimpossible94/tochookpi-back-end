@@ -2,6 +2,9 @@ package com.tochookpi.tochookpi.service;
 
 import com.tochookpi.tochookpi.dto.UserDTO;
 
+import java.util.List;
+
 public interface UserService {
-    public UserDTO findById(Long id);
+    UserDTO findById(Long id);
+    List<UserDTO> findAllUsers();
 }
