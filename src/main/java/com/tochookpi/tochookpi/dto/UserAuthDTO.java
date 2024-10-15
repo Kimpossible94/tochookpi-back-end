@@ -9,8 +9,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @Setter
 @Getter
-public class UserDTO {
-    private Long id;
+public class UserAuthDTO {
     private String username;
     private String email;
+    private String password;
 }

@@ -1,8 +1,10 @@
 package com.tochookpi.tochookpi.service;
 
+import com.tochookpi.tochookpi.dto.UserAuthDTO;
 import com.tochookpi.tochookpi.dto.UserDTO;
 import com.tochookpi.tochookpi.entity.User;
 import com.tochookpi.tochookpi.repository.UserRepository;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,19 +19,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO findById(Long id) {
-        User userEntity = userRepository.findById(id).get();
-        UserDTO userDTO = new UserDTO(userEntity.getId(), userEntity.getUsername(), userEntity.getEmail(), userEntity.getPassword());
-        return userDTO;
-    }
+    public UserDTO registerUser(UserAuthDTO userAuthDTO) {
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String encodedPassword = passwordEncoder.encode(userAuthDTO.getPassword());
 
-    @Override
-    public List<UserDTO> findAllUsers() {
-        List<User> userEntitys = userRepository.findAll();
-        List<UserDTO> userDTOList = userEntitys.stream()
-                .map(userEntity -> new UserDTO(userEntity.getId(), userEntity.getUsername(), userEntity.getEmail(), userEntity.getPassword()))
-                .collect(Collectors.toList());
+        User user = new User(userAuthDTO.getUsername(), userAuthDTO.getEmail(), encodedPassword);
+        User saveduser = userRepository.save(user);
 
-        return userDTOList;
+        return new UserDTO(saveduser.getId(), saveduser.getUsername(), saveduser.getEmail());
     }
 }
