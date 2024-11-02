@@ -1,5 +1,6 @@
 package com.tochookpi.tochookpi.entity;
 
+import com.tochookpi.tochookpi.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,7 +13,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class User {
+public class UserEntity {
     @Id
     @GeneratedValue(strategy =  GenerationType.IDENTITY)
     private Long id;
@@ -26,9 +27,14 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    public User(String username, String email, String password) {
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role;
+
+    public UserEntity(String username, String email, String password, Role role) {
         this.username = username;
         this.email = email;
         this.password = password;
+        this.role = role;
     }
 }

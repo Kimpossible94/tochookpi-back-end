@@ -12,7 +12,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Setter
 @Getter
-public class Meeting {
+public class MeetingEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -23,5 +23,5 @@ public class Meeting {
 
     @ManyToOne
     @JoinColumn(name = "organizer_id")
-    private User organizer; // 모임 주최자
+    private UserEntity organizer; // 모임 주최자
 }
