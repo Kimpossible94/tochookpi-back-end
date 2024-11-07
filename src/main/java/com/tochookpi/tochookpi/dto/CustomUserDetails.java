@@ -27,7 +27,7 @@ public class CustomUserDetails implements UserDetails {
             }
         });
 
-        return List.of();
+        return authorities;
     }
 
     @Override
@@ -37,7 +37,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return userEntity.getUsername();
+        return userEntity.getEmail();
     }
 
     @Override

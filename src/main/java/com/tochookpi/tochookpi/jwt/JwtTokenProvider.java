@@ -14,7 +14,7 @@ public class JwtTokenProvider {
 
     private SecretKey secretKey;
 
-    public JwtTokenProvider(@Value("${spring.jwt.secret}") String secret) {
+    public JwtTokenProvider(@Value("${jwt.secret}") String secret) {
         // HS256 알고리즘을 사용하여 SecretKey를 초기화
         this.secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
     }
