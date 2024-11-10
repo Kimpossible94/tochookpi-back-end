@@ -45,16 +45,19 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     // 인증이 성공했을 때
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
+        // 인증된 사용자 정보를 호출
         CustomUserDetails userDetails = (CustomUserDetails) authResult.getPrincipal();
 
-        String username = userDetails.getUsername();
+        // 사용자의 권한 정보 추출
         Collection<? extends GrantedAuthority> authorities = authResult.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
         GrantedAuthority auth = iterator.next();
 
         String role = auth.getAuthority();
-
+        String username = userDetails.getUsername();
+        // username, role로 10시간(60*60*10L) 동안 유효한 JWT 생성
         String token = jwtTokenProvider.createJwt(username, role, 60*60*10L);
+        // 응답 헤더에 Authorization으로 토큰 설정
         response.addHeader("Authorization", "Bearer " + token);
     }
 
