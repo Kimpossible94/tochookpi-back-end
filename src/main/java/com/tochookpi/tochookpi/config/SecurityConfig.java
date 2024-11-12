@@ -1,7 +1,8 @@
 package com.tochookpi.tochookpi.config;
 
 import com.tochookpi.tochookpi.jwt.JwtFilter;
-import com.tochookpi.tochookpi.jwt.JwtTokenProvider;
+import com.tochookpi.tochookpi.jwt.JwtProvider;
+import com.tochookpi.tochookpi.jwt.JwtValidator;
 import com.tochookpi.tochookpi.jwt.LoginFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,11 +20,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtProvider jwtProvider;
+    private final JwtValidator jwtValidator;
 
-    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JwtTokenProvider jwtTokenProvider) {
+    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JwtProvider jwtProvider, JwtValidator jwtValidator) {
         this.authenticationConfiguration = authenticationConfiguration;
-        this.jwtTokenProvider = jwtTokenProvider;
+        this.jwtProvider = jwtProvider;
+        this.jwtValidator = jwtValidator;
     }
 
     @Bean
@@ -51,8 +54,8 @@ public class SecurityConfig {
 //                .denyAll() // 모든 사용자의 접근을 거부
             )
                 // UsernamePasswordAuthenticationFilter 자리에 커스텀 클래스 등록
-                .addFilterAt(new LoginFilter(authenticationManager(this.authenticationConfiguration), this.jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(new JwtFilter(jwtTokenProvider), LoginFilter.class);
+                .addFilterAt(new LoginFilter(authenticationManager(this.authenticationConfiguration), this.jwtProvider), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtFilter(jwtValidator), LoginFilter.class);
 
         return http.build();
     }

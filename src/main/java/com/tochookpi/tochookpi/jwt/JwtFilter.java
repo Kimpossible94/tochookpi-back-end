@@ -9,52 +9,48 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
 public class JwtFilter extends OncePerRequestFilter {
+    private final JwtValidator jwtValidator;
 
-    private final JwtTokenProvider jwtTokenProvider;
-
-    public JwtFilter(JwtTokenProvider jwtTokenProvider) {
-        this.jwtTokenProvider = jwtTokenProvider;
+    public JwtFilter(JwtValidator jwtValidator) {
+        this.jwtValidator = jwtValidator;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        // 요청에서 Authorization 헤더를 찾음
-        String authorization = request.getHeader("Authorization");
+        // 요청에서 token값을 찾음
+        String token = getJwtFromRequest(request);
 
-        if(authorization == null || !authorization.startsWith("Bearer ")) {
-            // request와 response를 다음 필터로 넘겨줌.
+        if(token != null && !jwtValidator.isExpired(token)) {
+            String username = jwtValidator.getUsername(token);
+            String role = jwtValidator.getRole(token);
+            Role roleEnum = Role.valueOf(role);
+
+            UserEntity userEntity = new UserEntity();
+            userEntity.setEmail(username);
+            userEntity.setPassword("tempPassword");
+            userEntity.setRole(roleEnum);
+
+            CustomUserDetails customUserDetails = new CustomUserDetails(userEntity);
+            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
+            // SecurityContextHolder에 인증정보 저장
+            SecurityContextHolder.getContext().setAuthentication(authToken);
+
+            // 요청과 응답을 다음 필터로 넘겨줌
             filterChain.doFilter(request, response);
-
-            // Authorization의 value가 null이거나 Bearer로 시작하지 않는다면 메소드 종료
-            return;
         }
+    }
 
-        String token = authorization.substring("Bearer ".length());
-
-        // 토큰 소멸시간 검증
-        if(jwtTokenProvider.isExpired(token)) {
-            filterChain.doFilter(request, response);
-            return;
+    private String getJwtFromRequest(HttpServletRequest request) {
+        String bearerToken = request.getHeader("Authorization");
+        if(StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7);
         }
-
-        String username = jwtTokenProvider.getUsername(token);
-        String role = jwtTokenProvider.getRole(token);
-        Role roleEnum = Role.valueOf(role);
-
-        UserEntity userEntity = new UserEntity();
-        userEntity.setEmail(username);
-        userEntity.setPassword("tempPassword");
-        userEntity.setRole(roleEnum);
-
-        CustomUserDetails customUserDetails = new CustomUserDetails(userEntity);
-        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(authToken);
-
-        filterChain.doFilter(request, response);
+        return null;
     }
 }
