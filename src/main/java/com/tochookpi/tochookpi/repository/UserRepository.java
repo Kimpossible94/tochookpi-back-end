@@ -1,8 +1,8 @@
 package com.tochookpi.tochookpi.repository;
 
-import com.tochookpi.tochookpi.entity.User;
+import com.tochookpi.tochookpi.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UserRepository extends JpaRepository<User, Long> {
-
+public interface UserRepository extends JpaRepository<UserEntity, Long> {
+    UserEntity findByEmail(String email);
 }

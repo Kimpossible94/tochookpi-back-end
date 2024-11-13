@@ -1,24 +1,60 @@
 package com.tochookpi.tochookpi.config;
 
+import com.tochookpi.tochookpi.jwt.JwtFilter;
+import com.tochookpi.tochookpi.jwt.JwtProvider;
+import com.tochookpi.tochookpi.jwt.JwtValidator;
+import com.tochookpi.tochookpi.jwt.LoginFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    // 5.7 이후 버전의 보안 설정 방식
+    private final AuthenticationConfiguration authenticationConfiguration;
+    private final JwtProvider jwtProvider;
+    private final JwtValidator jwtValidator;
+
+    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JwtProvider jwtProvider, JwtValidator jwtValidator) {
+        this.authenticationConfiguration = authenticationConfiguration;
+        this.jwtProvider = jwtProvider;
+        this.jwtValidator = jwtValidator;
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    // LoginFilter의 매개변수로 넣어줄 AuthenticationManager Bean 등록
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+        return configuration.getAuthenticationManager();
+    }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests((auth) -> auth
-                .requestMatchers("/", "/users").permitAll() // "/" 경로와 "/users" 경로는 모든 사용자에게 접근 가능 허용
-                .requestMatchers("/meetings/**").hasRole("ADMIN") // "/meetings" 경로는 특정 역할(ADMIN)만 접근 가능 허용
-                .requestMatchers("/my/**").hasAnyRole("ADMIN", "USER") // "/my" 경로는 특정 역할들(ADMIN, USER)만 접근 가능
-//                .anyRequest().authenticated() // 위에서 설정한 경로외에는 로그인을 해야 접근 허용
-//                .denyAll() // 모든 사용자의 접근을 거부
-        ).csrf(csrf -> csrf.disable());
+        http
+            .csrf(csrf -> csrf.disable())
+            .formLogin(form -> form.disable())
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/").permitAll()
+                .requestMatchers(HttpMethod.POST, "/users", "/login").permitAll()
+                .requestMatchers("/users").hasRole("USER")
+                .requestMatchers("/meetings/**", "/my/**").hasAnyRole("ADMIN", "USER")
+                .anyRequest().authenticated()
+            )
+            .addFilterAt(new LoginFilter(authenticationManager(this.authenticationConfiguration), this.jwtProvider), UsernamePasswordAuthenticationFilter.class)
+            .addFilterBefore(new JwtFilter(jwtValidator), LoginFilter.class);
+
         return http.build();
     }
 }
