@@ -51,11 +51,9 @@ public class SecurityConfig {
                 .requestMatchers("/users").hasRole("USER")
                 .requestMatchers("/meetings/**", "/my/**").hasAnyRole("ADMIN", "USER")
                 .anyRequest().authenticated()
-//                .denyAll() // 모든 사용자의 접근을 거부
             )
-                // UsernamePasswordAuthenticationFilter 자리에 커스텀 클래스 등록
-                .addFilterAt(new LoginFilter(authenticationManager(this.authenticationConfiguration), this.jwtProvider), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(new JwtFilter(jwtValidator), LoginFilter.class);
+            .addFilterAt(new LoginFilter(authenticationManager(this.authenticationConfiguration), this.jwtProvider), UsernamePasswordAuthenticationFilter.class)
+            .addFilterBefore(new JwtFilter(jwtValidator), LoginFilter.class);
 
         return http.build();
     }

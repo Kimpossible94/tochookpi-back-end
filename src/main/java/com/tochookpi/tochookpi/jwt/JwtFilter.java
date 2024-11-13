@@ -40,10 +40,10 @@ public class JwtFilter extends OncePerRequestFilter {
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
             // SecurityContextHolder에 인증정보 저장
             SecurityContextHolder.getContext().setAuthentication(authToken);
-
-            // 요청과 응답을 다음 필터로 넘겨줌
-            filterChain.doFilter(request, response);
         }
+
+        // 요청과 응답을 다음 필터로 넘겨줌
+        filterChain.doFilter(request, response);
     }
 
     private String getJwtFromRequest(HttpServletRequest request) {
