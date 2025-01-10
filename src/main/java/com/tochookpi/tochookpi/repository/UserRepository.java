@@ -1,8 +1,11 @@
 package com.tochookpi.tochookpi.repository;
 
-import com.tochookpi.tochookpi.entity.User;
+import com.tochookpi.tochookpi.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UserRepository extends JpaRepository<User, Long> {
+import java.util.Optional;
 
+public interface UserRepository extends JpaRepository<UserEntity, Long> {
+    Optional<UserEntity> findByEmail(String email);
+    boolean existsByEmail(String email);
 }

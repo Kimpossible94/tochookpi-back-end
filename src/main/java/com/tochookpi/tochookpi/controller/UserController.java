@@ -1,14 +1,14 @@
 package com.tochookpi.tochookpi.controller;
 
+import com.tochookpi.tochookpi.dto.UserAuthDTO;
 import com.tochookpi.tochookpi.dto.UserDTO;
 import com.tochookpi.tochookpi.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -19,15 +19,9 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping(value = "/{id}")
-    public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
-        UserDTO userDTO = userService.findById(id);
-        return ResponseEntity.ok(userDTO);
-    }
-
-    @GetMapping
-    public ResponseEntity<List<UserDTO>> getAllUsers() {
-        List<UserDTO> userList = userService.findAllUsers();
-        return ResponseEntity.ok(userList);
+    @PostMapping
+    public ResponseEntity<UserDTO> registerUser(@Valid @RequestBody UserAuthDTO userAuthDTO) {
+        UserDTO createdUser = userService.registerUser(userAuthDTO);
+        return ResponseEntity.ok(createdUser);
     }
 }

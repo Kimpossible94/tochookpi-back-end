@@ -1,35 +1,36 @@
 package com.tochookpi.tochookpi.service;
 
+import com.tochookpi.tochookpi.dto.UserAuthDTO;
 import com.tochookpi.tochookpi.dto.UserDTO;
-import com.tochookpi.tochookpi.entity.User;
+import com.tochookpi.tochookpi.entity.UserEntity;
+import com.tochookpi.tochookpi.enums.Role;
 import com.tochookpi.tochookpi.repository.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
-    public UserDTO findById(Long id) {
-        User userEntity = userRepository.findById(id).get();
-        UserDTO userDTO = new UserDTO(userEntity.getId(), userEntity.getUsername(), userEntity.getEmail(), userEntity.getPassword());
-        return userDTO;
-    }
+    public UserDTO registerUser(UserAuthDTO userAuthDTO) {
+        String encodedPassword = passwordEncoder.encode(userAuthDTO.getPassword());
+        Role userRole = Role.ROLE_USER;
 
-    @Override
-    public List<UserDTO> findAllUsers() {
-        List<User> userEntitys = userRepository.findAll();
-        List<UserDTO> userDTOList = userEntitys.stream()
-                .map(userEntity -> new UserDTO(userEntity.getId(), userEntity.getUsername(), userEntity.getEmail(), userEntity.getPassword()))
-                .collect(Collectors.toList());
+        // 이메일 중복체크
+        if(userRepository.existsByEmail(userAuthDTO.getEmail())) {
+            throw new IllegalArgumentException("이미 등록된 이메일입니다.");
+        }
 
-        return userDTOList;
+        UserEntity user = new UserEntity(userAuthDTO.getEmail(), encodedPassword, userAuthDTO.getName(), userAuthDTO.getPhone(), userRole);
+        UserEntity savedUser = userRepository.save(user);
+
+        return new UserDTO(savedUser.getId(), savedUser.getName(), savedUser.getEmail());
     }
 }
