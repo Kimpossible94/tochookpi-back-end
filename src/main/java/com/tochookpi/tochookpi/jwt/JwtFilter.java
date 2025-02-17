@@ -32,6 +32,10 @@ public class JwtFilter extends OncePerRequestFilter {
             return true;
         } else if ("/auth/verification-code".equals(path) || "/auth/verification-code/verify".equals(path) || "/auth/refresh".equals(path)) {
             return true;
+        } else if ("/temp/null-error".equals(path) || "/temp/number-error".equals(path) || "/temp/illegal-error".equals(path) || "/temp/custom-error".equals(path)) {
+            return true;
+        } else if (path.contains("/swagger-ui/") || path.contains("/v3/api-docs")) {
+            return true;
         }
 
         return false;
