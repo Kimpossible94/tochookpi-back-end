@@ -2,7 +2,9 @@ package com.tochookpi.tochookpi.jwt;
 
 import com.tochookpi.tochookpi.dto.CustomUserDetails;
 import com.tochookpi.tochookpi.entity.UserEntity;
+import com.tochookpi.tochookpi.enums.ErrorCode;
 import com.tochookpi.tochookpi.enums.Role;
+import com.tochookpi.tochookpi.exception.TochookpiException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -46,7 +48,9 @@ public class JwtFilter extends OncePerRequestFilter {
         // 요청에서 token값을 찾음
         String token = getJwtFromRequest(request);
 
-        if(token != null && !jwtValidator.isExpired(token, true)) {
+        if (token == null) throw new TochookpiException(ErrorCode.TOKEN_NOT_PROVIDED);
+
+        if (!jwtValidator.isExpired(token, true)) {
             String username = jwtValidator.getUsername(token, true);
             String role = jwtValidator.getRole(token, true);
             Role roleEnum = Role.valueOf(role);
@@ -66,8 +70,7 @@ public class JwtFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         } else {
             // 토큰이 유효하지 않다면 401 Unauthorized 응답
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Access token expired or invalid.");
+            throw new TochookpiException(ErrorCode.EXPIRED_ACCESS_TOKEN);
         }
     }
 

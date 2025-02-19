@@ -1,5 +1,6 @@
 package com.tochookpi.tochookpi.config;
 
+import com.tochookpi.tochookpi.exception.GlobalExceptionFilter;
 import com.tochookpi.tochookpi.jwt.JwtFilter;
 import com.tochookpi.tochookpi.jwt.JwtProvider;
 import com.tochookpi.tochookpi.jwt.JwtValidator;
@@ -22,11 +23,17 @@ public class SecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JwtProvider jwtProvider;
     private final JwtValidator jwtValidator;
+    private final GlobalExceptionFilter globalExceptionFilter;
 
-    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JwtProvider jwtProvider, JwtValidator jwtValidator) {
+
+    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration,
+                          JwtProvider jwtProvider,
+                          JwtValidator jwtValidator,
+                          GlobalExceptionFilter globalExceptionFilter) {
         this.authenticationConfiguration = authenticationConfiguration;
         this.jwtProvider = jwtProvider;
         this.jwtValidator = jwtValidator;
+        this.globalExceptionFilter = globalExceptionFilter;
     }
 
     @Bean
@@ -56,7 +63,8 @@ public class SecurityConfig {
                 .anyRequest().permitAll()
             )
             .addFilterAt(new LoginFilter(authenticationManager(this.authenticationConfiguration), this.jwtProvider), UsernamePasswordAuthenticationFilter.class)
-            .addFilterBefore(new JwtFilter(jwtValidator), LoginFilter.class);
+            .addFilterBefore(new JwtFilter(jwtValidator), LoginFilter.class)
+            .addFilterBefore(globalExceptionFilter, JwtFilter.class);
 
         return http.build();
     }

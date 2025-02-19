@@ -2,6 +2,8 @@ package com.tochookpi.tochookpi.service;
 
 import com.tochookpi.tochookpi.dto.PhoneVerificationDTO;
 import com.tochookpi.tochookpi.entity.UserEntity;
+import com.tochookpi.tochookpi.enums.ErrorCode;
+import com.tochookpi.tochookpi.exception.TochookpiException;
 import com.tochookpi.tochookpi.jwt.JwtProvider;
 import com.tochookpi.tochookpi.jwt.JwtValidator;
 import com.tochookpi.tochookpi.repository.UserRepository;
@@ -35,14 +37,14 @@ public class AuthServiceImpl implements AuthService {
 
             // DB에서 role조회
             UserEntity userEntity = userRepository.findByEmail(username)
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "유효하지 않거나 만료된 Refresh Token입니다."));
+                    .orElseThrow(() -> new TochookpiException(ErrorCode.EXPIRED_REFRESH_TOKEN));
 
             String role = userEntity.getRole().name();
 
             return jwtProvider.createAccessJwt(username, role, 60*60*10L);
         }
 
-        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "유효하지 않거나 만료된 Refresh Token입니다.");
+        throw new TochookpiException(ErrorCode.EXPIRED_REFRESH_TOKEN);
     }
 
     @Override

@@ -6,7 +6,6 @@ import org.springframework.http.HttpStatus;
 public class TochookpiException extends RuntimeException {
     private final ErrorCode errorCode;
 
-
     public TochookpiException(ErrorCode errorCode) {
         super(errorCode.getMessage());
         this.errorCode = errorCode;
