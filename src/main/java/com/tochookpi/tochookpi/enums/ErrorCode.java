@@ -14,11 +14,12 @@ public enum ErrorCode {
     DATA_NOT_FOUND(HttpStatus.NOT_FOUND, "GLOBAL-005", "요청 데이터 없음"),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "GLOBAL-006", "서버 문제 발생"),
     SERVICE_UNAVAILABLE(HttpStatus.SERVICE_UNAVAILABLE, "GLOBAL-007", "서비스 사용 불가"),
+    MISSING_REQUIRED_PARAMETER(HttpStatus.BAD_REQUEST, "GLOBAL-008", "필수 파라미터가 없습니다"),
 
     EXPIRED_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, "AUTH-001", "Access Token 만료"),
     EXPIRED_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "AUTH-002", "Refresh Token 만료"),
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "AUTH-003", "잘못된 토큰"),
-    TOKEN_NOT_PROVIDED(HttpStatus.UNAUTHORIZED, "AUTH-004", "토큰 미제공"),
+    TOKEN_NOT_PROVIDED(HttpStatus.BAD_REQUEST, "AUTH-004", "토큰 미제공"),
     ACCESS_DENIED(HttpStatus.FORBIDDEN, "AUTH-005", "접근 권한 없음"),
     SOCIAL_AUTH_FAILED(HttpStatus.UNAUTHORIZED, "AUTH-006", "소셜 로그인 인증 실패"),
     INVALID_AUTH_CODE(HttpStatus.UNAUTHORIZED, "AUTH-007", "인증 코드 유효 하지 않음"),

@@ -1,5 +1,7 @@
 package com.tochookpi.tochookpi.jwt;
 
+import com.tochookpi.tochookpi.enums.ErrorCode;
+import com.tochookpi.tochookpi.exception.TochookpiException;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -33,8 +35,11 @@ public class JwtValidator {
     }
 
     public Boolean isExpired(String token, boolean isAccessToken) {
-        // JWT의 만료 여부를 확인
         SecretKey key = isAccessToken ? accessSecretKey : refreshSecretKey;
-        return Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload().getExpiration().before(new Date());
+        try {
+            return Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload().getExpiration().before(new Date());
+        } catch (Exception e) {
+            throw new TochookpiException(ErrorCode.INVALID_TOKEN);
+        }
     }
 }
