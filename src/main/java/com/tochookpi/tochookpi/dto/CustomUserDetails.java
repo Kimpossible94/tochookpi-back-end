@@ -2,11 +2,11 @@ package com.tochookpi.tochookpi.dto;
 
 import com.tochookpi.tochookpi.entity.UserEntity;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.Collections;
 
 public class CustomUserDetails implements UserDetails {
 
@@ -18,16 +18,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-
-        authorities.add(new GrantedAuthority() {
-            @Override
-            public String getAuthority() {
-                return userEntity.getRole().name();
-            }
-        });
-
-        return authorities;
+        return Collections.singletonList(new SimpleGrantedAuthority(userEntity.getRole().name()));
     }
 
     @Override
@@ -35,6 +26,7 @@ public class CustomUserDetails implements UserDetails {
         return userEntity.getPassword();
     }
 
+    // email을 로그인 아이디로 사용하기 때문에 getEmail()을 사용
     @Override
     public String getUsername() {
         return userEntity.getEmail();

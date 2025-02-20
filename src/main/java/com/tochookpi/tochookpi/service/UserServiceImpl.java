@@ -21,11 +21,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO registerUser(UserAuthDTO userAuthDTO) {
         String encodedPassword = passwordEncoder.encode(userAuthDTO.getPassword());
-        Role userRole = Role.USER;
+        Role userRole = Role.ROLE_USER;
 
-        UserEntity user = new UserEntity(userAuthDTO.getUsername(), userAuthDTO.getEmail(), encodedPassword, userRole);
+        // 이메일 중복체크
+        if(userRepository.existsByEmail(userAuthDTO.getEmail())) {
+            throw new IllegalArgumentException("이미 등록된 이메일입니다.");
+        }
+
+        UserEntity user = new UserEntity(userAuthDTO.getEmail(), encodedPassword, userAuthDTO.getName(), userAuthDTO.getPhone(), userRole);
         UserEntity savedUser = userRepository.save(user);
 
-        return new UserDTO(savedUser.getId(), savedUser.getUsername(), savedUser.getEmail());
+        return new UserDTO(savedUser.getId(), savedUser.getName(), savedUser.getEmail());
     }
 }

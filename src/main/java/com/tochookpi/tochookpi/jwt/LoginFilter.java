@@ -3,6 +3,7 @@ package com.tochookpi.tochookpi.jwt;
 import com.tochookpi.tochookpi.dto.CustomUserDetails;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -29,11 +30,11 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         // 1. 사용자의 요청에서 아이디와 비밀번호 추출
-        String username = obtainUsername(request);
+        String email = request.getParameter("email");
         String password = obtainPassword(request);
 
         // 2. username과 password로 토큰을 만듬
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, password, null);
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, password, null);
 
         // 3. AuthenticationManager에게 토큰을 넘겨주어 검증을 진행함.
         return authenticationManager.authenticate(authenticationToken);
@@ -52,16 +53,30 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         String role = auth.getAuthority();
         String username = userDetails.getUsername();
-        // username, role로 1시간(60*60*1L) 동안 유효한 JWT 생성
-        String token = jwtProvider.createJwt(username, role, 60*60*1L);
+        // username, role로 1시간(60*60*1000L) 동안 유효한 JWT 생성
+        String accessToken = jwtProvider.createAccessJwt(username, role, 60*60*10L);
+        // username으로 7일(60*60*24*7000L) 동안 유효한 JWT 생성
+        String refreshToken = jwtProvider.createRefreshJwt(username, 60*60*10L);
         // 응답 헤더에 Authorization으로 토큰 설정
-        response.addHeader("Authorization", "Bearer " + token);
+        response.addHeader("Authorization", "Bearer " + accessToken);
+        // 리프레시 토큰 쿠키에 추가
+        response.addCookie(createRefreshTokenCookie(refreshToken));
     }
 
     // 인증이 실패했을 때
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
         response.setStatus(401);
+    }
+
+    private Cookie createRefreshTokenCookie(String refreshToken) {
+        Cookie cookie = new Cookie("refresh_token", refreshToken);
+        cookie.setHttpOnly(true); // Javascript에서 접근할 수 없도록 설정
+        cookie.setSecure(true); // HTTPS에서만 전송되도록 설정
+        cookie.setMaxAge(60*60*24*7); // 쿠키의 유효기간 설정
+        cookie.setPath("/"); // 쿠키의 유효 범위 설정 (/은 모든 범위에서 쿠키가 전송되도록 설정)
+
+        return cookie;
     }
 }
 

@@ -1,5 +1,6 @@
 package com.tochookpi.tochookpi.config;
 
+import com.tochookpi.tochookpi.exception.GlobalExceptionFilter;
 import com.tochookpi.tochookpi.jwt.JwtFilter;
 import com.tochookpi.tochookpi.jwt.JwtProvider;
 import com.tochookpi.tochookpi.jwt.JwtValidator;
@@ -22,11 +23,17 @@ public class SecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JwtProvider jwtProvider;
     private final JwtValidator jwtValidator;
+    private final GlobalExceptionFilter globalExceptionFilter;
 
-    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JwtProvider jwtProvider, JwtValidator jwtValidator) {
+
+    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration,
+                          JwtProvider jwtProvider,
+                          JwtValidator jwtValidator,
+                          GlobalExceptionFilter globalExceptionFilter) {
         this.authenticationConfiguration = authenticationConfiguration;
         this.jwtProvider = jwtProvider;
         this.jwtValidator = jwtValidator;
+        this.globalExceptionFilter = globalExceptionFilter;
     }
 
     @Bean
@@ -47,13 +54,17 @@ public class SecurityConfig {
             .formLogin(form -> form.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/").permitAll()
+                .requestMatchers("/swagger-ui/**",
+                        "/v3/api-docs/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/users", "/login").permitAll()
                 .requestMatchers("/users").hasRole("USER")
+                .requestMatchers("/auth/verification-code/**").permitAll()
                 .requestMatchers("/meetings/**", "/my/**").hasAnyRole("ADMIN", "USER")
-                .anyRequest().authenticated()
+                .anyRequest().permitAll()
             )
             .addFilterAt(new LoginFilter(authenticationManager(this.authenticationConfiguration), this.jwtProvider), UsernamePasswordAuthenticationFilter.class)
-            .addFilterBefore(new JwtFilter(jwtValidator), LoginFilter.class);
+            .addFilterBefore(new JwtFilter(jwtValidator), LoginFilter.class)
+            .addFilterBefore(globalExceptionFilter, JwtFilter.class);
 
         return http.build();
     }
