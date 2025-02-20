@@ -1,6 +1,8 @@
 package com.tochookpi.tochookpi.jwt;
 
 import com.tochookpi.tochookpi.dto.CustomUserDetails;
+import com.tochookpi.tochookpi.enums.ErrorCode;
+import com.tochookpi.tochookpi.exception.TochookpiException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -66,7 +68,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     // 인증이 실패했을 때
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
-        response.setStatus(401);
+        throw new TochookpiException(ErrorCode.INVALID_CREDENTIALS);
     }
 
     private Cookie createRefreshTokenCookie(String refreshToken) {

@@ -23,6 +23,7 @@ public enum ErrorCode {
     ACCESS_DENIED(HttpStatus.FORBIDDEN, "AUTH-005", "접근 권한 없음"),
     SOCIAL_AUTH_FAILED(HttpStatus.UNAUTHORIZED, "AUTH-006", "소셜 로그인 인증 실패"),
     INVALID_AUTH_CODE(HttpStatus.UNAUTHORIZED, "AUTH-007", "인증 코드 유효 하지 않음"),
+    INVALID_CREDENTIALS(HttpStatus.UNAUTHORIZED, "AUTH-008", "이메일 또는 비밀번호가 올바르지 않음"),
 
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER-001", "사용자를 찾을 수 없음"),
     DUPLICATE_USER(HttpStatus.CONFLICT, "USER-002", "이미 존재하는 사용자"),
