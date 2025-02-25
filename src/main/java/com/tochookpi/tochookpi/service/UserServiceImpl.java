@@ -3,7 +3,9 @@ package com.tochookpi.tochookpi.service;
 import com.tochookpi.tochookpi.dto.UserAuthDTO;
 import com.tochookpi.tochookpi.dto.UserDTO;
 import com.tochookpi.tochookpi.entity.UserEntity;
+import com.tochookpi.tochookpi.enums.ErrorCode;
 import com.tochookpi.tochookpi.enums.Role;
+import com.tochookpi.tochookpi.exception.TochookpiException;
 import com.tochookpi.tochookpi.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -25,12 +27,32 @@ public class UserServiceImpl implements UserService {
 
         // 이메일 중복체크
         if(userRepository.existsByEmail(userAuthDTO.getEmail())) {
-            throw new IllegalArgumentException("이미 등록된 이메일입니다.");
+            throw new TochookpiException(ErrorCode.DUPLICATE_EMAIL);
         }
 
         UserEntity user = new UserEntity(userAuthDTO.getEmail(), encodedPassword, userAuthDTO.getName(), userAuthDTO.getPhone(), userRole);
         UserEntity savedUser = userRepository.save(user);
 
-        return new UserDTO(savedUser.getId(), savedUser.getName(), savedUser.getEmail());
+        return new UserDTO(
+                savedUser.getId(),
+                savedUser.getName(),
+                savedUser.getEmail(),
+                savedUser.getProfileImage(),
+                savedUser.getBio(),
+                savedUser.getAddress()
+        );
+    }
+
+    @Override
+    public UserDTO getUserInfo(String email) {
+        UserEntity userEntity = userRepository.findByEmail(email).orElseThrow(() -> new TochookpiException(ErrorCode.USER_NOT_FOUND));
+        return new UserDTO(
+                userEntity.getId(),
+                userEntity.getName(),
+                userEntity.getEmail(),
+                userEntity.getProfileImage(),
+                userEntity.getBio(),
+                userEntity.getAddress()
+        );
     }
 }

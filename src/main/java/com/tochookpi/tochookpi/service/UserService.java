@@ -6,4 +6,6 @@ import com.tochookpi.tochookpi.dto.UserDTO;
 public interface UserService {
 
     UserDTO registerUser(UserAuthDTO userAuthDTO);
+
+    UserDTO getUserInfo(String email);
 }
