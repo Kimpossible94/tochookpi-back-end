@@ -8,4 +8,6 @@ public interface UserService {
     UserDTO registerUser(UserAuthDTO userAuthDTO);
 
     UserDTO getUserInfo(String email);
+
+    void modifyUserInfo(String loggedInUserEmail, UserDTO userDTO);
 }

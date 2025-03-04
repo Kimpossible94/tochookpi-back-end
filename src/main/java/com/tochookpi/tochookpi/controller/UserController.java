@@ -29,4 +29,12 @@ public class UserController {
         UserDTO userDTO = userService.getUserInfo(customUserDetails.getUsername());
         return ResponseEntity.ok(userDTO);
     }
+
+    @PutMapping
+    public ResponseEntity<Void> modifyUserInfo(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+                                               @RequestBody UserDTO userDTO) {
+        String loggedInUserEmail = customUserDetails.getUsername();
+        userService.modifyUserInfo(loggedInUserEmail, userDTO);
+        return ResponseEntity.ok().build();
+    }
 }

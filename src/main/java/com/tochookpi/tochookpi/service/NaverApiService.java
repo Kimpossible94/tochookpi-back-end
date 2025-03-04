@@ -1,5 +1,9 @@
 package com.tochookpi.tochookpi.service;
 
+import com.tochookpi.tochookpi.dto.NaverApiAddressDTO;
+
+import java.util.List;
+
 public interface NaverApiService {
-    void searchLocal(String query);
+    List<NaverApiAddressDTO> searchLocal(String query);
 }

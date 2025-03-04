@@ -55,4 +55,14 @@ public class UserServiceImpl implements UserService {
                 userEntity.getAddress()
         );
     }
+
+    @Override
+    public void modifyUserInfo(String loggedInUserEmail, UserDTO userDTO) {
+        UserEntity userEntity = userRepository.findByEmail(loggedInUserEmail).orElseThrow(() -> new TochookpiException(ErrorCode.USER_NOT_FOUND));
+
+        userEntity.setAddress(userDTO.getAddress());
+        userEntity.setBio(userDTO.getBio());
+
+        userRepository.save(userEntity);
+    }
 }
