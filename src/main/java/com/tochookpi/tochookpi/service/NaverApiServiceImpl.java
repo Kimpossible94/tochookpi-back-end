@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tochookpi.tochookpi.dto.NaverApiAddressDTO;
 import com.tochookpi.tochookpi.enums.ErrorCode;
 import com.tochookpi.tochookpi.exception.TochookpiException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +20,11 @@ import java.util.stream.Collectors;
 
 @Service
 public class NaverApiServiceImpl implements NaverApiService {
-    private final String CLIENT_ID = "1";
-    private final String CLIENT_SECRET = "1";
+
+    @Value("${naver.client.id}")
+    private String CLIENT_ID;
+    @Value("${naver.client.secret}")
+    private String CLIENT_SECRET;
     private final WebClient webClient;
 
     public NaverApiServiceImpl(WebClient webClient) {

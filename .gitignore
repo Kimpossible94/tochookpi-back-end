@@ -36,5 +36,6 @@ out/
 ### VS Code ###
 .vscode/
 
-### DB 환경 변수 ###
-application-DB_INFO.properties
+### 환경 변수 ###
+application-DEV_ENV.properties
+application-PROD_ENV.properties
