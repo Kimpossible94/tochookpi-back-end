@@ -22,9 +22,9 @@ import java.util.stream.Collectors;
 public class NaverApiServiceImpl implements NaverApiService {
 
     @Value("${naver.client.id}")
-    private String CLIENT_ID;
+    private String clientId;
     @Value("${naver.client.secret}")
-    private String CLIENT_SECRET;
+    private String clientSecret;
     private final WebClient webClient;
 
     public NaverApiServiceImpl(WebClient webClient) {
@@ -46,8 +46,8 @@ public class NaverApiServiceImpl implements NaverApiService {
 
         WebClient webClient = WebClient.builder()
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .defaultHeader("X-Naver-Client-Id", CLIENT_ID)
-                .defaultHeader("X-Naver-Client-Secret", CLIENT_SECRET)
+                .defaultHeader("X-Naver-Client-Id", clientId)
+                .defaultHeader("X-Naver-Client-Secret", clientSecret)
                 .build();
 
         ResponseEntity<String> response = webClient.get()

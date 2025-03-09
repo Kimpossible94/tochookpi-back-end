@@ -1,0 +1,44 @@
+package com.tochookpi.tochookpi.service;
+
+import com.tochookpi.tochookpi.enums.ErrorCode;
+import com.tochookpi.tochookpi.exception.TochookpiException;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+
+import java.io.IOException;
+import java.util.UUID;
+
+@Service
+public class S3ServiceImpl implements S3Service {
+    @Value("${aws.s3.bucket-name}")
+    private String bucketName;
+
+    private final S3Client s3Client;
+
+    public S3ServiceImpl(S3Client s3Client) {
+        this.s3Client = s3Client;
+    }
+
+    @Override
+    public String uploadFile(MultipartFile file, String folder) {
+        String fileName = folder + "/" + UUID.randomUUID() + "-" + file.getOriginalFilename();
+
+        try {
+            s3Client.putObject(PutObjectRequest.builder()
+                            .bucket(bucketName)
+                            .key(fileName)
+                            .contentType(file.getContentType())
+                            .build(),
+                    RequestBody.fromBytes(file.getBytes())
+            );
+        } catch (IOException e) {
+            throw new TochookpiException(ErrorCode.FAIL_IMAGE_UPLOAD);
+        }
+
+        return "https://" + bucketName + ".s3.amazonaws.com/" + fileName;
+    }
+}
