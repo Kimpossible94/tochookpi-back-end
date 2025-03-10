@@ -2,6 +2,7 @@ package com.tochookpi.tochookpi.service;
 
 import com.tochookpi.tochookpi.dto.UserAuthDTO;
 import com.tochookpi.tochookpi.dto.UserDTO;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface UserService {
 
@@ -10,4 +11,6 @@ public interface UserService {
     UserDTO getUserInfo(String email);
 
     void modifyUserInfo(String loggedInUserEmail, UserDTO userDTO);
+
+    String modifyUserProfile(String loggedInUserEmail, MultipartFile multipartFile);
 }

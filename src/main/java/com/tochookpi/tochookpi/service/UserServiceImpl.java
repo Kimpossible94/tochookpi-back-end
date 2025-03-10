@@ -9,15 +9,18 @@ import com.tochookpi.tochookpi.exception.TochookpiException;
 import com.tochookpi.tochookpi.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final S3Service s3Service;
 
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, S3Service s3Service) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.s3Service = s3Service;
     }
 
     @Override
@@ -34,7 +37,6 @@ public class UserServiceImpl implements UserService {
         UserEntity savedUser = userRepository.save(user);
 
         return new UserDTO(
-                savedUser.getId(),
                 savedUser.getName(),
                 savedUser.getEmail(),
                 savedUser.getProfileImage(),
@@ -47,7 +49,6 @@ public class UserServiceImpl implements UserService {
     public UserDTO getUserInfo(String email) {
         UserEntity userEntity = userRepository.findByEmail(email).orElseThrow(() -> new TochookpiException(ErrorCode.USER_NOT_FOUND));
         return new UserDTO(
-                userEntity.getId(),
                 userEntity.getName(),
                 userEntity.getEmail(),
                 userEntity.getProfileImage(),
@@ -64,5 +65,16 @@ public class UserServiceImpl implements UserService {
         userEntity.setBio(userDTO.getBio());
 
         userRepository.save(userEntity);
+    }
+
+    @Override
+    public String modifyUserProfile(String loggedInUserEmail, MultipartFile multipartFile) {
+        UserEntity userEntity = userRepository.findByEmail(loggedInUserEmail).orElseThrow(() -> new TochookpiException(ErrorCode.USER_NOT_FOUND));
+
+        String profileUrl = s3Service.uploadFile(multipartFile, "profile");
+        userEntity.setProfileImage(profileUrl);
+        userRepository.save(userEntity);
+
+        return profileUrl;
     }
 }

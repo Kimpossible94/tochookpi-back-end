@@ -9,13 +9,15 @@ import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
-import java.io.IOException;
 import java.util.UUID;
 
 @Service
 public class S3ServiceImpl implements S3Service {
     @Value("${aws.s3.bucket-name}")
     private String bucketName;
+
+    @Value("${aws-region}")
+    private String region;
 
     private final S3Client s3Client;
 
@@ -35,10 +37,11 @@ public class S3ServiceImpl implements S3Service {
                             .build(),
                     RequestBody.fromBytes(file.getBytes())
             );
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new TochookpiException(ErrorCode.FAIL_IMAGE_UPLOAD);
         }
 
-        return "https://" + bucketName + ".s3.amazonaws.com/" + fileName;
+        return "https://" + bucketName + ".s3."
+                + region + ".amazonaws.com/" + fileName;
     }
 }
