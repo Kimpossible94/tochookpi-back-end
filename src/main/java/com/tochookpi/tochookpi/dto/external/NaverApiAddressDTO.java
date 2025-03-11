@@ -1,4 +1,4 @@
-package com.tochookpi.tochookpi.dto;
+package com.tochookpi.tochookpi.dto.external;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

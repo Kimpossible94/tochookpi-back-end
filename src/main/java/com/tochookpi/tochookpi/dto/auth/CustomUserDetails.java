@@ -1,4 +1,4 @@
-package com.tochookpi.tochookpi.dto;
+package com.tochookpi.tochookpi.dto.auth;
 
 import com.tochookpi.tochookpi.entity.UserEntity;
 import org.springframework.security.core.GrantedAuthority;

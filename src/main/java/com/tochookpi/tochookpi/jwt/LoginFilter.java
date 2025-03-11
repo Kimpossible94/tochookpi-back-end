@@ -1,6 +1,6 @@
 package com.tochookpi.tochookpi.jwt;
 
-import com.tochookpi.tochookpi.dto.CustomUserDetails;
+import com.tochookpi.tochookpi.dto.auth.CustomUserDetails;
 import com.tochookpi.tochookpi.enums.ErrorCode;
 import com.tochookpi.tochookpi.exception.TochookpiException;
 import jakarta.servlet.FilterChain;

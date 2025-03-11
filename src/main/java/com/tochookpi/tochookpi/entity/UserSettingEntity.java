@@ -17,9 +17,6 @@ public class UserSettingEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(mappedBy = "userSetting")
-    private UserEntity user;
-
     @Column(nullable = false)
     private boolean isNotificationDisabled = false;  // 알림 거부 여부
 

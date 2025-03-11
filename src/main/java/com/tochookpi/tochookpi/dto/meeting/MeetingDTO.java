@@ -1,4 +1,4 @@
-package com.tochookpi.tochookpi.dto;
+package com.tochookpi.tochookpi.dto.meeting;
 
 import com.tochookpi.tochookpi.entity.UserEntity;
 import lombok.AllArgsConstructor;

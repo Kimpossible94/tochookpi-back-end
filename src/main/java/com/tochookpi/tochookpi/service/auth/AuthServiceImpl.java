@@ -1,6 +1,6 @@
 package com.tochookpi.tochookpi.service.auth;
 
-import com.tochookpi.tochookpi.dto.PhoneVerificationDTO;
+import com.tochookpi.tochookpi.dto.auth.PhoneVerificationDTO;
 import com.tochookpi.tochookpi.entity.UserEntity;
 import com.tochookpi.tochookpi.enums.ErrorCode;
 import com.tochookpi.tochookpi.exception.TochookpiException;
@@ -93,7 +93,6 @@ public class AuthServiceImpl implements AuthService {
         }
     }
 
-    // SMS 전송 로직 (예시, 실제로는 외부 API 서비스 호출 처리)
     private void sendSms(PhoneVerificationDTO phoneVerificationDTO) {
         // 실제 SMS 전송 로직 구현 부분
         System.out.println("Sending verification code "

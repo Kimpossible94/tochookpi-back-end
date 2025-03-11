@@ -1,7 +1,7 @@
 package com.tochookpi.tochookpi.service.external;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tochookpi.tochookpi.dto.NaverApiAddressDTO;
+import com.tochookpi.tochookpi.dto.external.NaverApiAddressDTO;
 import com.tochookpi.tochookpi.enums.ErrorCode;
 import com.tochookpi.tochookpi.exception.TochookpiException;
 import org.springframework.beans.factory.annotation.Value;

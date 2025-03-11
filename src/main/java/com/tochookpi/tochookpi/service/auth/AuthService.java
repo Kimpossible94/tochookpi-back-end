@@ -1,6 +1,6 @@
 package com.tochookpi.tochookpi.service.auth;
 
-import com.tochookpi.tochookpi.dto.PhoneVerificationDTO;
+import com.tochookpi.tochookpi.dto.auth.PhoneVerificationDTO;
 
 public interface AuthService {
     String refreshAccessToken(String refreshToken);

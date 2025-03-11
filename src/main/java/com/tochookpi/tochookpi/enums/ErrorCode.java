@@ -36,6 +36,8 @@ public enum ErrorCode {
     INACTIVE_ACCOUNT(HttpStatus.FORBIDDEN, "USER-009", "비활성화된 계정"),
     BANNED_ACCOUNT(HttpStatus.FORBIDDEN, "USER-010", "정지된 계정"),
     FAIL_IMAGE_UPLOAD(HttpStatus.INTERNAL_SERVER_ERROR, "USER-011", "이미지 업로드에 실패했습니다."),
+    FAIL_MODIFY_USER_INFO(HttpStatus.INTERNAL_SERVER_ERROR, "USER-012", "유저 정보 수정에 실패했습니다."),
+    FAIL_MODIFY_USER_SETTING(HttpStatus.INTERNAL_SERVER_ERROR, "USER-013", "기본 설정 수정에 실패했습니다."),
 
     MEETING_NOT_FOUND(HttpStatus.NOT_FOUND, "MEETING-001", "모임를 찾을 수 없음"),
     MEETING_ACCESS_DENIED(HttpStatus.FORBIDDEN, "MEETING-002", "모임 접근 권한이 없음"),

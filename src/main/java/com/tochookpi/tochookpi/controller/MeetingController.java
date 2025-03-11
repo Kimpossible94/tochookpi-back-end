@@ -1,7 +1,7 @@
 package com.tochookpi.tochookpi.controller;
 
-import com.tochookpi.tochookpi.dto.CustomUserDetails;
-import com.tochookpi.tochookpi.dto.MeetingDTO;
+import com.tochookpi.tochookpi.dto.auth.CustomUserDetails;
+import com.tochookpi.tochookpi.dto.meeting.MeetingDTO;
 import com.tochookpi.tochookpi.service.meeting.MeetingService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

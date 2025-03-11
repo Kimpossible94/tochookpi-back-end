@@ -1,6 +1,6 @@
 package com.tochookpi.tochookpi.controller;
 
-import com.tochookpi.tochookpi.dto.NaverApiAddressDTO;
+import com.tochookpi.tochookpi.dto.external.NaverApiAddressDTO;
 import com.tochookpi.tochookpi.service.external.NaverApiService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

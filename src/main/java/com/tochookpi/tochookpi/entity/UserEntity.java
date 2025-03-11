@@ -39,19 +39,20 @@ public class UserEntity {
     @Column(length = 255, nullable = true)
     private String address;
 
-    @OneToOne
-    @JoinColumn(name = "user_setting_id", nullable = true)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "user_setting_id", nullable = false)
     private UserSettingEntity userSetting;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
 
-    public UserEntity(String email, String password, String name, String phone, Role role) {
+    public UserEntity(String email, String password, String name, String phone, UserSettingEntity userSetting, Role role) {
         this.email = email;
         this.password = password;
         this.name = name;
         this.phone = phone;
+        this.userSetting = userSetting;
         this.role = role;
     }
 }

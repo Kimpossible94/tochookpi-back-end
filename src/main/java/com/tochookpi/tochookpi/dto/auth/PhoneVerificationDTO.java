@@ -1,4 +1,4 @@
-package com.tochookpi.tochookpi.dto;
+package com.tochookpi.tochookpi.dto.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

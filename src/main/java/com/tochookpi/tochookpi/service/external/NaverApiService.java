@@ -1,6 +1,6 @@
 package com.tochookpi.tochookpi.service.external;
 
-import com.tochookpi.tochookpi.dto.NaverApiAddressDTO;
+import com.tochookpi.tochookpi.dto.external.NaverApiAddressDTO;
 
 import java.util.List;
 

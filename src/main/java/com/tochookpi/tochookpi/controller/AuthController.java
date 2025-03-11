@@ -1,6 +1,6 @@
 package com.tochookpi.tochookpi.controller;
 
-import com.tochookpi.tochookpi.dto.PhoneVerificationDTO;
+import com.tochookpi.tochookpi.dto.auth.PhoneVerificationDTO;
 import com.tochookpi.tochookpi.service.auth.AuthService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

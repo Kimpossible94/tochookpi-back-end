@@ -1,7 +1,7 @@
 package com.tochookpi.tochookpi.service.user;
 
-import com.tochookpi.tochookpi.dto.UserAuthDTO;
-import com.tochookpi.tochookpi.dto.UserDTO;
+import com.tochookpi.tochookpi.dto.user.UserAuthDTO;
+import com.tochookpi.tochookpi.dto.user.UserDTO;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface UserService {
