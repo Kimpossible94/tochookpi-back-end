@@ -3,7 +3,7 @@ package com.tochookpi.tochookpi.controller;
 import com.tochookpi.tochookpi.dto.CustomUserDetails;
 import com.tochookpi.tochookpi.dto.UserAuthDTO;
 import com.tochookpi.tochookpi.dto.UserDTO;
-import com.tochookpi.tochookpi.service.UserService;
+import com.tochookpi.tochookpi.service.user.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

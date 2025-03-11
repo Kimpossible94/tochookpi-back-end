@@ -1,4 +1,4 @@
-package com.tochookpi.tochookpi.service;
+package com.tochookpi.tochookpi.service.auth;
 
 import com.tochookpi.tochookpi.dto.CustomUserDetails;
 import com.tochookpi.tochookpi.entity.UserEntity;

@@ -30,14 +30,18 @@ public class UserEntity {
     @Column(nullable = false)
     private String phone;
 
-    @Column(name = "profile_image", nullable = true, columnDefinition = "VARCHAR(512) DEFAULT ''")
+    @Column(name = "profile_image", length = 512, nullable = true)
     private String profileImage;
 
-    @Column(columnDefinition = "VARCHAR(2048) DEFAULT ''")
+    @Column(length = 2048, nullable = true)
     private String bio;
 
-    @Column(columnDefinition = "VARCHAR(255) DEFAULT ''")
+    @Column(length = 255, nullable = true)
     private String address;
+
+    @OneToOne
+    @JoinColumn(name = "user_setting_id", nullable = true)
+    private UserSettingEntity userSetting;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

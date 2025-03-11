@@ -1,4 +1,4 @@
-package com.tochookpi.tochookpi.service;
+package com.tochookpi.tochookpi.service.storage;
 
 import com.tochookpi.tochookpi.enums.ErrorCode;
 import com.tochookpi.tochookpi.exception.TochookpiException;

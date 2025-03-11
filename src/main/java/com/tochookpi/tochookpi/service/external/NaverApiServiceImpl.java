@@ -1,4 +1,4 @@
-package com.tochookpi.tochookpi.service;
+package com.tochookpi.tochookpi.service.external;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tochookpi.tochookpi.dto.NaverApiAddressDTO;

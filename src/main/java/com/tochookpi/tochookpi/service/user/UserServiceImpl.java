@@ -1,4 +1,4 @@
-package com.tochookpi.tochookpi.service;
+package com.tochookpi.tochookpi.service.user;
 
 import com.tochookpi.tochookpi.dto.UserAuthDTO;
 import com.tochookpi.tochookpi.dto.UserDTO;
@@ -7,6 +7,7 @@ import com.tochookpi.tochookpi.enums.ErrorCode;
 import com.tochookpi.tochookpi.enums.Role;
 import com.tochookpi.tochookpi.exception.TochookpiException;
 import com.tochookpi.tochookpi.repository.UserRepository;
+import com.tochookpi.tochookpi.service.storage.S3Service;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;

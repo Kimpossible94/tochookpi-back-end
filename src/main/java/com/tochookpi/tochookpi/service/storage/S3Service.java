@@ -1,4 +1,4 @@
-package com.tochookpi.tochookpi.service;
+package com.tochookpi.tochookpi.service.storage;
 
 import org.springframework.web.multipart.MultipartFile;
 

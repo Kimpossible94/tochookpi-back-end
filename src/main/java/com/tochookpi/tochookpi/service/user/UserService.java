@@ -1,4 +1,4 @@
-package com.tochookpi.tochookpi.service;
+package com.tochookpi.tochookpi.service.user;
 
 import com.tochookpi.tochookpi.dto.UserAuthDTO;
 import com.tochookpi.tochookpi.dto.UserDTO;
