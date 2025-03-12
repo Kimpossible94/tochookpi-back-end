@@ -2,25 +2,35 @@ package com.tochookpi.tochookpi.service.user;
 
 import com.tochookpi.tochookpi.dto.user.UserAuthDTO;
 import com.tochookpi.tochookpi.dto.user.UserDTO;
+import com.tochookpi.tochookpi.entity.MeetingEntity;
 import com.tochookpi.tochookpi.entity.UserEntity;
 import com.tochookpi.tochookpi.entity.UserSettingEntity;
 import com.tochookpi.tochookpi.enums.ErrorCode;
 import com.tochookpi.tochookpi.enums.Role;
 import com.tochookpi.tochookpi.exception.TochookpiException;
+import com.tochookpi.tochookpi.repository.MeetingParticipantRepository;
+import com.tochookpi.tochookpi.repository.MeetingRepository;
 import com.tochookpi.tochookpi.repository.UserRepository;
 import com.tochookpi.tochookpi.service.storage.S3Service;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final MeetingParticipantRepository meetingParticipantRepository;
+    private final MeetingRepository meetingRepository;
     private final PasswordEncoder passwordEncoder;
     private final S3Service s3Service;
 
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, S3Service s3Service) {
+    public UserServiceImpl(UserRepository userRepository, MeetingParticipantRepository meetingParticipantRepository, MeetingRepository meetingRepository, PasswordEncoder passwordEncoder, S3Service s3Service) {
         this.userRepository = userRepository;
+        this.meetingParticipantRepository = meetingParticipantRepository;
+        this.meetingRepository = meetingRepository;
         this.passwordEncoder = passwordEncoder;
         this.s3Service = s3Service;
     }
@@ -72,5 +82,15 @@ public class UserServiceImpl implements UserService {
         userRepository.save(userEntity);
 
         return profileUrl;
+    }
+
+    @Override
+    public void deleteUser(String loggedInUserEmail) {
+        UserEntity userEntity = userRepository.findByEmail(loggedInUserEmail).orElseThrow(() -> new TochookpiException(ErrorCode.USER_NOT_FOUND));
+
+        userRepository.delete(userEntity);
+
+        // 유저가 만든 모임 조회
+        List<MeetingEntity> meetingEntityList = meetingRepository.findByOrganizerId(userEntity.getId()).orElse(new ArrayList<>());
     }
 }

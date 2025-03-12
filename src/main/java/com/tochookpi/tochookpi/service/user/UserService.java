@@ -13,4 +13,6 @@ public interface UserService {
     void modifyUserInfo(String loggedInUserEmail, UserDTO userDTO);
 
     String modifyUserProfile(String loggedInUserEmail, MultipartFile multipartFile);
+
+    void deleteUser(String loggedInUserEmail);
 }

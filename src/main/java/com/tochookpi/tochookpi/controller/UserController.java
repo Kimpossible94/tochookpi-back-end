@@ -46,4 +46,12 @@ public class UserController {
         String profileUrl = userService.modifyUserProfile(loggedInUserEmail, multipartFile);
         return ResponseEntity.ok(profileUrl);
     }
+
+    @DeleteMapping
+    public ResponseEntity<Void> deleteUser(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        String loggedInUserEmail = customUserDetails.getUsername();
+        userService.deleteUser(loggedInUserEmail);
+
+        return ResponseEntity.ok().build();
+    }
 }
