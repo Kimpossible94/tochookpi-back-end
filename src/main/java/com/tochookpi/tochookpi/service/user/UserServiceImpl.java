@@ -3,6 +3,7 @@ package com.tochookpi.tochookpi.service.user;
 import com.tochookpi.tochookpi.dto.user.UserAuthDTO;
 import com.tochookpi.tochookpi.dto.user.UserDTO;
 import com.tochookpi.tochookpi.entity.MeetingEntity;
+import com.tochookpi.tochookpi.entity.MeetingParticipantEntity;
 import com.tochookpi.tochookpi.entity.UserEntity;
 import com.tochookpi.tochookpi.entity.UserSettingEntity;
 import com.tochookpi.tochookpi.enums.ErrorCode;
@@ -92,5 +93,25 @@ public class UserServiceImpl implements UserService {
 
         // 유저가 만든 모임 조회
         List<MeetingEntity> meetingEntityList = meetingRepository.findByOrganizerId(userEntity.getId()).orElse(new ArrayList<>());
+
+        for(MeetingEntity meetingEntity : meetingEntityList) {
+            List<MeetingParticipantEntity> participants = meetingEntity.getParticipants();
+
+            if(participants.isEmpty()) {
+                // 참가자가 없으면 모임 제거
+                meetingRepository.delete(meetingEntity);
+            } else {
+                // 참가자가 있으면 다른 유저에게 모임 주최자 권한 위임
+                MeetingParticipantEntity newOrganizerParticipant = participants.get(0);
+                UserEntity newOrganizer = newOrganizerParticipant.getUser();
+
+                meetingEntity.setOrganizer(newOrganizer);
+                participants.remove(newOrganizerParticipant);
+
+                meetingRepository.save(meetingEntity);
+            }
+        }
+
+        userRepository.delete(userEntity);
     }
 }

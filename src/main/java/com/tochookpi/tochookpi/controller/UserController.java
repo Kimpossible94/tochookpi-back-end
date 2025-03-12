@@ -4,6 +4,8 @@ import com.tochookpi.tochookpi.dto.auth.CustomUserDetails;
 import com.tochookpi.tochookpi.dto.user.UserAuthDTO;
 import com.tochookpi.tochookpi.dto.user.UserDTO;
 import com.tochookpi.tochookpi.service.user.UserService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -48,9 +50,17 @@ public class UserController {
     }
 
     @DeleteMapping
-    public ResponseEntity<Void> deleteUser(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+    public ResponseEntity<Void> deleteUser(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+                                           HttpServletResponse response) {
         String loggedInUserEmail = customUserDetails.getUsername();
         userService.deleteUser(loggedInUserEmail);
+
+        Cookie refreshTokenCookie = new Cookie("refresh_token", null);
+        refreshTokenCookie.setHttpOnly(true);
+        refreshTokenCookie.setSecure(true);
+        refreshTokenCookie.setPath("/");
+        refreshTokenCookie.setMaxAge(0); // 즉시 만료
+        response.addCookie(refreshTokenCookie);
 
         return ResponseEntity.ok().build();
     }
