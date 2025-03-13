@@ -1,6 +1,6 @@
-package com.tochookpi.tochookpi.service;
+package com.tochookpi.tochookpi.service.auth;
 
-import com.tochookpi.tochookpi.dto.CustomUserDetails;
+import com.tochookpi.tochookpi.dto.auth.CustomUserDetails;
 import com.tochookpi.tochookpi.entity.UserEntity;
 import com.tochookpi.tochookpi.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;

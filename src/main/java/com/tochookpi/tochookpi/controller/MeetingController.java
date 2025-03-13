@@ -1,8 +1,8 @@
 package com.tochookpi.tochookpi.controller;
 
-import com.tochookpi.tochookpi.dto.CustomUserDetails;
-import com.tochookpi.tochookpi.dto.MeetingDTO;
-import com.tochookpi.tochookpi.service.MeetingServiceImpl;
+import com.tochookpi.tochookpi.dto.auth.CustomUserDetails;
+import com.tochookpi.tochookpi.dto.meeting.MeetingDTO;
+import com.tochookpi.tochookpi.service.meeting.MeetingService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("meetings")
 public class MeetingController {
-    private final MeetingServiceImpl meetingService;
+    private final MeetingService meetingService;
 
-    public MeetingController(MeetingServiceImpl meetingService) {
+    public MeetingController(MeetingService meetingService) {
         this.meetingService = meetingService;
     }
 

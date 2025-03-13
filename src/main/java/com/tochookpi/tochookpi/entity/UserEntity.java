@@ -30,15 +30,29 @@ public class UserEntity {
     @Column(nullable = false)
     private String phone;
 
+    @Column(name = "profile_image", length = 512, nullable = true)
+    private String profileImage;
+
+    @Column(length = 2048, nullable = true)
+    private String bio;
+
+    @Column(length = 255, nullable = true)
+    private String address;
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "user_setting_id", nullable = false)
+    private UserSettingEntity userSetting;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
 
-    public UserEntity(String email, String password, String name, String phone, Role role) {
+    public UserEntity(String email, String password, String name, String phone, UserSettingEntity userSetting, Role role) {
         this.email = email;
         this.password = password;
         this.name = name;
         this.phone = phone;
+        this.userSetting = userSetting;
         this.role = role;
     }
 }

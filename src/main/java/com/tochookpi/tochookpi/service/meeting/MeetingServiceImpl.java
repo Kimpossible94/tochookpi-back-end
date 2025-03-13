@@ -1,4 +1,4 @@
-package com.tochookpi.tochookpi.service;
+package com.tochookpi.tochookpi.service.meeting;
 
 import com.tochookpi.tochookpi.repository.MeetingRepository;
 import org.springframework.stereotype.Service;

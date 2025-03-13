@@ -1,7 +1,9 @@
 package com.tochookpi.tochookpi.controller;
 
-import com.tochookpi.tochookpi.dto.PhoneVerificationDTO;
-import com.tochookpi.tochookpi.service.AuthService;
+import com.tochookpi.tochookpi.dto.auth.PhoneVerificationDTO;
+import com.tochookpi.tochookpi.service.auth.AuthService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,6 +46,18 @@ public class AuthController {
 
     @GetMapping("/validate-token")
     public ResponseEntity<Void> validateToken() {
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(HttpServletResponse response) {
+        Cookie refreshTokenCookie = new Cookie("refresh_token", null);
+        refreshTokenCookie.setHttpOnly(true);
+        refreshTokenCookie.setSecure(true);
+        refreshTokenCookie.setPath("/");
+        refreshTokenCookie.setMaxAge(0); // 즉시 만료
+        response.addCookie(refreshTokenCookie);
+
         return ResponseEntity.ok().build();
     }
 }
