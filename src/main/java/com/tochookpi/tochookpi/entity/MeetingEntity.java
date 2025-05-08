@@ -14,6 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @Setter
 @Getter
+@Builder
 public class MeetingEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,8 +24,6 @@ public class MeetingEntity {
     private String title;
 
     private String description;
-
-    private String location;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "organizer_id", nullable = false)
@@ -43,6 +42,9 @@ public class MeetingEntity {
 
     @Column(nullable = false)
     private LocalDate endDate;
+
+    @Embedded
+    private Location location;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
