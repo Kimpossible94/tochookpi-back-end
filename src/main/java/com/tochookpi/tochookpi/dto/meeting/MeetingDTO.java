@@ -15,8 +15,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
-import static java.util.stream.Collectors.toList;
-
 @Getter
 @Setter
 @NoArgsConstructor
@@ -65,10 +63,10 @@ public class MeetingDTO {
                 .image(this.image)
                 .organizer(organizer)
                 .maxParticipantsCnt(this.maxParticipantsCnt)
-                .currentParticipantsCnt(this.currentParticipantsCnt)
+                .currentParticipantsCnt(this.currentParticipantsCnt == 0 ? 1 : this.currentParticipantsCnt)
                 .startDate(this.startDate)
                 .endDate(this.endDate)
-                .status(this.status)
+                .status(this.status != null ? this.status : MeetingStatus.BEFORE)
                 .location(Location.builder()
                         .title(this.location.getTitle())
                         .address(this.location.getAddress())

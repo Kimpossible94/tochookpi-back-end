@@ -34,9 +34,11 @@ public class MeetingServiceImpl implements MeetingService {
         List<MeetingScheduleEntity> scheduleEntities = meetingDTO.toScheduleEntities(meetingEntity);
         meetingEntity.setSchedules(scheduleEntities);
 
-        String imageUrl = s3Service.uploadFile(image, "meeting");
+        if(image != null) {
+            String imageUrl = s3Service.uploadFile(image, "meeting");
+            meetingEntity.setImage(imageUrl);
+        }
 
-//        meetingEntity.setImage(imageUrl);
-//        meetingRepository.save(meetingEntity);
+        meetingRepository.save(meetingEntity);
     }
 }
