@@ -54,8 +54,7 @@ public class SecurityConfig {
             .formLogin(form -> form.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/").permitAll()
-                .requestMatchers("/swagger-ui/**",
-                        "/v3/api-docs/**").permitAll()
+                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/users", "/login").permitAll()
                 .requestMatchers("/users").hasRole("USER")
                 .requestMatchers("/auth/verification-code/**").permitAll()
