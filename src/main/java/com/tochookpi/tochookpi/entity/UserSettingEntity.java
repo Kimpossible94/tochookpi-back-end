@@ -18,8 +18,8 @@ public class UserSettingEntity {
     private Long id;
 
     @Column(nullable = false)
-    private boolean isNotificationDisabled = false;  // 알림 거부 여부
+    private boolean isNotificationDisabled = false;
 
     @Column(nullable = false)
-    private boolean isInviteDisabled = false;  // 모임 초대 거부 여부
+    private boolean isInviteDisabled = false;
 }

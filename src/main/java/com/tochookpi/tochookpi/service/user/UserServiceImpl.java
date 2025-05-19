@@ -8,6 +8,7 @@ import com.tochookpi.tochookpi.entity.UserEntity;
 import com.tochookpi.tochookpi.entity.UserSettingEntity;
 import com.tochookpi.tochookpi.enums.ErrorCode;
 import com.tochookpi.tochookpi.enums.Role;
+import com.tochookpi.tochookpi.exception.S3OrphanFileException;
 import com.tochookpi.tochookpi.exception.TochookpiException;
 import com.tochookpi.tochookpi.repository.MeetingParticipantRepository;
 import com.tochookpi.tochookpi.repository.MeetingRepository;
@@ -78,7 +79,12 @@ public class UserServiceImpl implements UserService {
 
         String profileUrl = s3Service.uploadFile(multipartFile, "profile");
         userEntity.setProfileImage(profileUrl);
-        userRepository.save(userEntity);
+
+        try {
+            userRepository.save(userEntity);
+        } catch (Exception e) {
+            throw new S3OrphanFileException(ErrorCode.FAIL_IMAGE_UPLOAD, userEntity.getProfileImage());
+        }
 
         return profileUrl;
     }

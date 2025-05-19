@@ -20,17 +20,17 @@ public class MeetingScheduleEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "meeting_id", nullable = false)
-    private MeetingEntity meeting; // 해당 모임
+    private MeetingEntity meeting;
 
     @Column(nullable = false)
-    private LocalDate date; // 일정 날짜
+    private LocalDate date;
 
     @Column(nullable = false)
-    private LocalTime startTime; // 시작 시간
+    private LocalTime startTime;
 
     @Column(nullable = false)
-    private LocalTime endTime; // 종료 시간
+    private LocalTime endTime;
 
     @Column(nullable = false)
-    private String description; // 일정 내용
+    private String description;
 }

@@ -5,6 +5,7 @@ import com.tochookpi.tochookpi.entity.MeetingEntity;
 import com.tochookpi.tochookpi.entity.MeetingScheduleEntity;
 import com.tochookpi.tochookpi.entity.UserEntity;
 import com.tochookpi.tochookpi.enums.ErrorCode;
+import com.tochookpi.tochookpi.exception.S3OrphanFileException;
 import com.tochookpi.tochookpi.exception.TochookpiException;
 import com.tochookpi.tochookpi.repository.MeetingRepository;
 import com.tochookpi.tochookpi.repository.UserRepository;
@@ -34,11 +35,19 @@ public class MeetingServiceImpl implements MeetingService {
         List<MeetingScheduleEntity> scheduleEntities = meetingDTO.toScheduleEntities(meetingEntity);
         meetingEntity.setSchedules(scheduleEntities);
 
+        String imageUrl = null;
         if(image != null) {
-            String imageUrl = s3Service.uploadFile(image, "meeting");
+            imageUrl = s3Service.uploadFile(image, "meeting");
             meetingEntity.setImage(imageUrl);
         }
 
-        meetingRepository.save(meetingEntity);
+        try {
+            meetingRepository.save(meetingEntity);
+        } catch (Exception e) {
+            if (imageUrl != null) {
+                throw new S3OrphanFileException(ErrorCode.MEETING_FAIL_CREATE_MEETING, imageUrl);
+            }
+            throw new TochookpiException(ErrorCode.MEETING_FAIL_CREATE_MEETING);
+        }
     }
 }

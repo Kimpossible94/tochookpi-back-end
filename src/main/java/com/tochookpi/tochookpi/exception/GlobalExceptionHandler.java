@@ -1,19 +1,32 @@
 package com.tochookpi.tochookpi.exception;
 
 import com.tochookpi.tochookpi.enums.ErrorCode;
+import com.tochookpi.tochookpi.service.storage.OrphanFileLogService;
+import com.tochookpi.tochookpi.service.storage.S3Service;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MissingPathVariableException;
 import org.springframework.web.bind.MissingRequestCookieException;
-import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.io.IOException;
-
 @RestControllerAdvice
+@AllArgsConstructor
 public class GlobalExceptionHandler {
+
+    private final OrphanFileLogService orphanFileLogService;
+
+    @ExceptionHandler(S3OrphanFileException.class)
+    public ResponseEntity<ErrorResponse> handleS3OrphanFileException(S3OrphanFileException ex, HttpServletRequest request) {
+        if(ex.getImageUrls() != null) {
+            for (String url : ex.getImageUrls()) {
+                orphanFileLogService.saveLog(url, "고아 객체 생성");
+            }
+        }
+
+        return handleCustomException(ex, request);
+    }
 
     @ExceptionHandler(TochookpiException.class)
     public ResponseEntity<ErrorResponse> handleCustomException(TochookpiException ex, HttpServletRequest request) {
