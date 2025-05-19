@@ -43,7 +43,8 @@ public enum ErrorCode {
     MEETING_ACCESS_DENIED(HttpStatus.FORBIDDEN, "MEETING-002", "모임 접근 권한이 없음"),
     MEETING_FULL(HttpStatus.BAD_REQUEST, "MEETING-003", "모임이 이미 가득 참"),
     MEETING_ALREADY_STARTED(HttpStatus.CONFLICT, "MEETING-004", "모임 일정이 이미 시작됨"),
-    MEETING_ALREADY_ENDED(HttpStatus.BAD_REQUEST, "MEETING-005", "모임 일정이 이미 종료됨");
+    MEETING_ALREADY_ENDED(HttpStatus.BAD_REQUEST, "MEETING-005", "모임 일정이 이미 종료됨"),
+    MEETING_FAIL_CREATE_MEETING(HttpStatus.INTERNAL_SERVER_ERROR, "MEETING-006", "모임 저장 실패");
 
     private final HttpStatus httpStatus;
     private final String code;
