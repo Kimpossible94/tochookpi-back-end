@@ -8,6 +8,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("meetings")
 public class MeetingController {
@@ -25,5 +27,13 @@ public class MeetingController {
         String loggedInUserEmail = customUserDetails.getUsername();
         meetingService.createMeeting(loggedInUserEmail, image, meetingDTO);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping
+    public ResponseEntity<List<MeetingDTO>> getMeetings(@RequestParam(required = false) String searchTerm,
+                                                        @RequestParam(required = false) List<String> category,
+                                                        @RequestParam(required = false) String sort)
+    {
+        return ResponseEntity.ok(meetingService.getMeetings(searchTerm, category, sort));
     }
 }
