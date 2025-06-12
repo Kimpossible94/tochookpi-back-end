@@ -20,6 +20,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MeetingDTO {
+    private Long id;
     private String title;
     private String description;
     private UserDTO organizer;

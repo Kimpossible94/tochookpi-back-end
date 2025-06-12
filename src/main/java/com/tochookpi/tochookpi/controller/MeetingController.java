@@ -36,4 +36,9 @@ public class MeetingController {
     {
         return ResponseEntity.ok(meetingService.getMeetings(searchTerm, category, sort));
     }
+
+    @GetMapping("{id}")
+    public ResponseEntity<MeetingDTO> getMeetingById(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(meetingService.getMeetingById(id));
+    }
 }

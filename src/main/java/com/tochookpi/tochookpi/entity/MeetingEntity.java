@@ -73,6 +73,7 @@ public class MeetingEntity {
 
     public MeetingDTO toDTO() {
         MeetingDTO dto = new MeetingDTO();
+        dto.setId(this.id);
         dto.setTitle(this.title);
         dto.setDescription(this.description);
         dto.setImage(this.image);

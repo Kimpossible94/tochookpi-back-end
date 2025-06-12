@@ -99,4 +99,9 @@ public class MeetingServiceImpl implements MeetingService {
                 .map(MeetingEntity::toDTO)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public MeetingDTO getMeetingById(Long id) {
+        return meetingRepository.findById(id).orElseThrow(() -> new TochookpiException(ErrorCode.MEETING_NOT_FOUND)).toDTO();
+    }
 }
