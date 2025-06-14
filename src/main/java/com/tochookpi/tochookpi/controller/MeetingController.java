@@ -2,6 +2,7 @@ package com.tochookpi.tochookpi.controller;
 
 import com.tochookpi.tochookpi.dto.auth.CustomUserDetails;
 import com.tochookpi.tochookpi.dto.meeting.MeetingDTO;
+import com.tochookpi.tochookpi.enums.MeetingCategory;
 import com.tochookpi.tochookpi.service.meeting.MeetingService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -31,7 +32,7 @@ public class MeetingController {
 
     @GetMapping
     public ResponseEntity<List<MeetingDTO>> getMeetings(@RequestParam(required = false) String searchTerm,
-                                                        @RequestParam(required = false) List<String> category,
+                                                        @RequestParam(required = false) List<MeetingCategory> category,
                                                         @RequestParam(required = false) String sort)
     {
         return ResponseEntity.ok(meetingService.getMeetings(searchTerm, category, sort));

@@ -5,6 +5,7 @@ import com.tochookpi.tochookpi.entity.Location;
 import com.tochookpi.tochookpi.entity.MeetingEntity;
 import com.tochookpi.tochookpi.entity.MeetingScheduleEntity;
 import com.tochookpi.tochookpi.entity.UserEntity;
+import com.tochookpi.tochookpi.enums.MeetingCategory;
 import com.tochookpi.tochookpi.enums.MeetingStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,6 +24,7 @@ public class MeetingDTO {
     private Long id;
     private String title;
     private String description;
+    private MeetingCategory category;
     private UserDTO organizer;
     private String image;
     private LocationDTO location;
@@ -61,6 +63,7 @@ public class MeetingDTO {
         return MeetingEntity.builder()
                 .title(this.title)
                 .description(this.description)
+                .category(this.category)
                 .image(this.image)
                 .organizer(organizer)
                 .maxParticipantsCnt(this.maxParticipantsCnt)

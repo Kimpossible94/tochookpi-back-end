@@ -2,6 +2,7 @@ package com.tochookpi.tochookpi.entity;
 
 import com.tochookpi.tochookpi.dto.meeting.MeetingDTO;
 import com.tochookpi.tochookpi.dto.user.UserDTO;
+import com.tochookpi.tochookpi.enums.MeetingCategory;
 import com.tochookpi.tochookpi.enums.MeetingStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -28,6 +29,10 @@ public class MeetingEntity {
     private String title;
 
     private String description;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private MeetingCategory category;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "organizer_id", nullable = false)
@@ -76,6 +81,7 @@ public class MeetingEntity {
         dto.setId(this.id);
         dto.setTitle(this.title);
         dto.setDescription(this.description);
+        dto.setCategory(this.category);
         dto.setImage(this.image);
         dto.setOrganizer(new UserDTO(this.organizer));
         dto.setMaxParticipantsCnt(this.maxParticipantsCnt);

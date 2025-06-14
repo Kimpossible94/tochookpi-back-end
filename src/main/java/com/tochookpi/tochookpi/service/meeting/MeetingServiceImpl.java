@@ -9,6 +9,7 @@ import com.tochookpi.tochookpi.entity.MeetingScheduleEntity;
 import com.tochookpi.tochookpi.entity.QMeetingEntity;
 import com.tochookpi.tochookpi.entity.UserEntity;
 import com.tochookpi.tochookpi.enums.ErrorCode;
+import com.tochookpi.tochookpi.enums.MeetingCategory;
 import com.tochookpi.tochookpi.enums.SortOption;
 import com.tochookpi.tochookpi.exception.S3OrphanFileException;
 import com.tochookpi.tochookpi.exception.TochookpiException;
@@ -64,7 +65,7 @@ public class MeetingServiceImpl implements MeetingService {
     }
 
     @Override
-    public List<MeetingDTO> getMeetings(String searchTerm, List<String> category, String sort) {
+    public List<MeetingDTO> getMeetings(String searchTerm, List<MeetingCategory> category, String sort) {
         QMeetingEntity meetingEntity = QMeetingEntity.meetingEntity;
         BooleanBuilder predicate = new BooleanBuilder();
 
@@ -72,10 +73,9 @@ public class MeetingServiceImpl implements MeetingService {
             predicate.and(meetingEntity.title.containsIgnoreCase(searchTerm));
         }
 
-        // 카테고리 추후 추가 예정
-//        if(category != null && !category.isEmpty()) {
-//            predicate.and(meetingEntity)
-//        }
+        if(category != null && !category.isEmpty()) {
+            predicate.and(meetingEntity.category.in(category));
+        }
 
         OrderSpecifier<LocalDateTime> orderBy;
 
