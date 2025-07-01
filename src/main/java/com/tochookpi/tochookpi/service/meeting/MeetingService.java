@@ -12,5 +12,9 @@ public interface MeetingService {
 
     List<MeetingDTO> getMeetings(String searchTerm, List<MeetingCategory> category, String sort);
 
-    MeetingDTO getMeetingById(Long id);
+    MeetingDTO getMeetingById(String loggedInUserEmail, Long id);
+
+    void joinMeeting(String loggedInUserEmail, Long id);
+
+    void leaveMeeting(String loggedInUserEmail, Long id);
 }

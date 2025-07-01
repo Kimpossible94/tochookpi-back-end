@@ -121,6 +121,11 @@ public class MeetingEntity {
 
         dto.setSchedules(scheduleDTOList);
 
+        // participants 변환
+        dto.setParticipants(this.participants.stream()
+                .map(participant -> new UserDTO(participant.getUser()))
+                .collect(Collectors.toList()));
+
         return dto;
     }
 }

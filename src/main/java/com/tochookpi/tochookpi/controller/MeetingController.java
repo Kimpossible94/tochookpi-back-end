@@ -39,7 +39,25 @@ public class MeetingController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<MeetingDTO> getMeetingById(@PathVariable("id") Long id) {
-        return ResponseEntity.ok(meetingService.getMeetingById(id));
+    public ResponseEntity<MeetingDTO> getMeetingById(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+                                                     @PathVariable("id") Long id) {
+        String loggedInUserEmail = customUserDetails.getUsername();
+        return ResponseEntity.ok(meetingService.getMeetingById(loggedInUserEmail, id));
+    }
+
+    @PostMapping("{id}/join")
+    public ResponseEntity<Void> joinMeeting(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+                                            @PathVariable("id") Long id) {
+        String loggedInUserEmail = customUserDetails.getUsername();
+        meetingService.joinMeeting(loggedInUserEmail, id);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("{id}/leave")
+    public ResponseEntity<Void> leaveMeeting(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+                                            @PathVariable("id") Long id) {
+        String loggedInUserEmail = customUserDetails.getUsername();
+        meetingService.leaveMeeting(loggedInUserEmail, id);
+        return ResponseEntity.ok().build();
     }
 }

@@ -34,6 +34,8 @@ public class MeetingDTO {
     private LocalDate endDate;
     private MeetingStatus status;
     private List<ScheduleDTO> schedules;
+    private List<UserDTO> participants;
+    private boolean isParticipating;
 
     @Getter
     @Setter

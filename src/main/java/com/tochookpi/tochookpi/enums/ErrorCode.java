@@ -44,7 +44,10 @@ public enum ErrorCode {
     MEETING_FULL(HttpStatus.BAD_REQUEST, "MEETING-003", "모임이 이미 가득 참"),
     MEETING_ALREADY_STARTED(HttpStatus.CONFLICT, "MEETING-004", "모임 일정이 이미 시작됨"),
     MEETING_ALREADY_ENDED(HttpStatus.BAD_REQUEST, "MEETING-005", "모임 일정이 이미 종료됨"),
-    MEETING_FAIL_CREATE_MEETING(HttpStatus.INTERNAL_SERVER_ERROR, "MEETING-006", "모임 저장 실패");
+    MEETING_ALREADY_JOINED(HttpStatus.BAD_REQUEST, "MEETING-006", "이미 참여한 모임"),
+    MEETING_NOT_JOINED(HttpStatus.BAD_REQUEST, "MEETING-007", "참여한 모임이 아님"),
+    MEETING_ORGANIZER_CANNOT_LEAVE(HttpStatus.BAD_REQUEST, "MEETING-008", "주최자는 모임을 나갈 수 없음"),
+    MEETING_FAIL_CREATE_MEETING(HttpStatus.INTERNAL_SERVER_ERROR, "MEETING-009", "모임 저장 실패");
 
     private final HttpStatus httpStatus;
     private final String code;
