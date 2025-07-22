@@ -10,7 +10,7 @@ public interface MeetingService {
 
     void createMeeting(String loggedInUserEmail, MultipartFile image, MeetingDTO meetingDTO);
 
-    List<MeetingDTO> getMeetings(String searchTerm, List<MeetingCategory> category, String sort);
+    List<MeetingDTO> getMeetings(String loggedInUserEmail, String searchTerm, List<MeetingCategory> category, String sort, String type);
 
     MeetingDTO getMeetingById(String loggedInUserEmail, Long id);
 

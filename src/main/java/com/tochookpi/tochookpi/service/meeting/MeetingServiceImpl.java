@@ -2,6 +2,8 @@ package com.tochookpi.tochookpi.service.meeting;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.tochookpi.tochookpi.dto.meeting.MeetingDTO;
 import com.tochookpi.tochookpi.entity.*;
@@ -79,33 +81,52 @@ public class MeetingServiceImpl implements MeetingService {
     }
 
     @Override
-    public List<MeetingDTO> getMeetings(String searchTerm, List<MeetingCategory> category, String sort) {
-        QMeetingEntity meetingEntity = QMeetingEntity.meetingEntity;
+    public List<MeetingDTO> getMeetings(String loggedInUserEmail, String searchTerm, List<MeetingCategory> category, String sort, String type) {
+        QMeetingEntity meeting = QMeetingEntity.meetingEntity;
+        QMeetingParticipantEntity participant = QMeetingParticipantEntity.meetingParticipantEntity;
         BooleanBuilder predicate = new BooleanBuilder();
 
-        if(searchTerm != null && !searchTerm.isEmpty()) {
-            predicate.and(meetingEntity.title.containsIgnoreCase(searchTerm));
+        if(searchTerm != null && !searchTerm.equals("")) {
+            predicate.and(meeting.title.containsIgnoreCase(searchTerm));
         }
 
         if(category != null && !category.isEmpty()) {
-            predicate.and(meetingEntity.category.in(category));
+            predicate.and(meeting.category.in(category));
+        }
+
+        if(type != null && !type.equals("")) {
+            UserEntity userEntity = userRepository.findByEmail(loggedInUserEmail).orElseThrow(()
+                    -> new TochookpiException(ErrorCode.USER_NOT_FOUND));
+
+            if("created".equals(type)) {
+                predicate.and(meeting.organizer.eq(userEntity));
+            } else if ("joined".equals(type)) {
+                BooleanExpression joinedPredicate = JPAExpressions
+                        .selectOne()
+                        .from(participant)
+                        .where(participant.meeting.eq(meeting)
+                                .and(participant.user.eq(userEntity)))
+                        .exists();
+                predicate = predicate.and(joinedPredicate);
+
+            }
         }
 
         OrderSpecifier<LocalDateTime> orderBy;
 
         if (SortOption.LATEST.getValue().equals(sort)) {
-            orderBy = meetingEntity.createdAt.desc();
+            orderBy = meeting.createdAt.desc();
         }
         // 추후 인기순 정렬 로직 추가
         // else if (MeetingSort.POPULAR.getValue().equals(sort)) {
         //     orderBy = ...;
         // }
         else {
-            orderBy = meetingEntity.createdAt.desc();
+            orderBy = meeting.createdAt.desc();
         }
 
         return queryFactory
-                .selectFrom(meetingEntity)
+                .selectFrom(meeting)
                 .where(predicate)
                 .orderBy(orderBy)
                 .fetch()

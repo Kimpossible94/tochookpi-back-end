@@ -31,11 +31,14 @@ public class MeetingController {
     }
 
     @GetMapping
-    public ResponseEntity<List<MeetingDTO>> getMeetings(@RequestParam(required = false) String searchTerm,
+    public ResponseEntity<List<MeetingDTO>> getMeetings(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+                                                        @RequestParam(required = false) String searchTerm,
                                                         @RequestParam(required = false) List<MeetingCategory> category,
-                                                        @RequestParam(required = false) String sort)
+                                                        @RequestParam(required = false) String sort,
+                                                        @RequestParam(required = false) String type)
     {
-        return ResponseEntity.ok(meetingService.getMeetings(searchTerm, category, sort));
+        String loggedInUserEmail = customUserDetails.getUsername();
+        return ResponseEntity.ok(meetingService.getMeetings(loggedInUserEmail, searchTerm, category, sort, type));
     }
 
     @GetMapping("{id}")
