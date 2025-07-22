@@ -101,6 +101,8 @@ public class MeetingServiceImpl implements MeetingService {
             if("created".equals(type)) {
                 predicate.and(meeting.organizer.eq(userEntity));
             } else if ("joined".equals(type)) {
+                predicate.and(meeting.organizer.ne(userEntity));
+
                 BooleanExpression joinedPredicate = JPAExpressions
                         .selectOne()
                         .from(participant)
