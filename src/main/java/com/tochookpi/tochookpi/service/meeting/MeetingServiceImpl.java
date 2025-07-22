@@ -179,4 +179,17 @@ public class MeetingServiceImpl implements MeetingService {
 
         meetingRepository.save(meetingEntity);
     }
+
+    @Override
+    public void deleteMeeting(String loggedInUserEmail, Long id) {
+        UserEntity userEntity = userRepository.findByEmail(loggedInUserEmail)
+                .orElseThrow(() -> new TochookpiException(ErrorCode.USER_NOT_FOUND));
+
+        MeetingEntity meetingEntity = meetingRepository.findById(id)
+                .orElseThrow(() -> new TochookpiException(ErrorCode.MEETING_NOT_FOUND));
+
+        if(!meetingEntity.getOrganizer().equals(userEntity)) throw new TochookpiException(ErrorCode.MEETING_ACCESS_DENIED);
+
+        meetingRepository.delete(meetingEntity);
+    }
 }

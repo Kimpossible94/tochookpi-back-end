@@ -60,4 +60,13 @@ public class MeetingController {
         meetingService.leaveMeeting(loggedInUserEmail, id);
         return ResponseEntity.ok().build();
     }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void> deleteMeeting(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+                                              @PathVariable("id") Long id) {
+        String loggedInUserEmail = customUserDetails.getUsername();
+        meetingService.deleteMeeting(loggedInUserEmail, id);
+
+        return ResponseEntity.ok().build();
+    }
 }

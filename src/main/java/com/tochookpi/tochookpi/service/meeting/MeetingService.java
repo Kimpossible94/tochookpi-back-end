@@ -17,4 +17,6 @@ public interface MeetingService {
     void joinMeeting(String loggedInUserEmail, Long id);
 
     void leaveMeeting(String loggedInUserEmail, Long id);
+
+    void deleteMeeting(String loggedInUserEmail, Long id);
 }
