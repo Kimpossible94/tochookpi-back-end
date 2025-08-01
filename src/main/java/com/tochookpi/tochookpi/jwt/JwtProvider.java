@@ -23,8 +23,8 @@ public class JwtProvider {
     public String createAccessJwt(String username, String role, Long expiredMs) {
         // 사용자 이름, 역할 및 만료 시간(ms 단위)으로 JWT 생성
         return Jwts.builder()
-                .claim("username", username) // claim으로 payload에 데이터를 넣어줄 수 있음.
-                .claim("role", role)
+                .subject(username)
+                .claim("role", role) // claim으로 payload에 데이터를 넣어줄 수 있음.
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + expiredMs))
                 .signWith(accessSecretKey)
@@ -34,7 +34,7 @@ public class JwtProvider {
     public String createRefreshJwt(String username, Long expiredMs) {
         // 사용자 이름, 만료 시간(ms 단위)으로 JWT 생성
         return Jwts.builder()
-                .claim("username", username)
+                .subject(username)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + expiredMs))
                 .signWith(refreshSecretKey)

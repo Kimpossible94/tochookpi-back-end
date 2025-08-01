@@ -3,6 +3,7 @@ package com.tochookpi.tochookpi.controller;
 import com.tochookpi.tochookpi.dto.auth.CustomUserDetails;
 import com.tochookpi.tochookpi.dto.user.UserAuthDTO;
 import com.tochookpi.tochookpi.dto.user.UserDTO;
+import com.tochookpi.tochookpi.dto.user.UserSummaryDTO;
 import com.tochookpi.tochookpi.service.user.UserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -11,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -36,9 +39,16 @@ public class UserController {
     @PutMapping
     public ResponseEntity<Void> modifyUserInfo(@AuthenticationPrincipal CustomUserDetails customUserDetails,
                                                @RequestBody UserDTO userDTO) {
-        String loggedInUserEmail = customUserDetails.getUsername();
-        userService.modifyUserInfo(loggedInUserEmail, userDTO);
+        String loggedInUserId = customUserDetails.getUsername();
+        userService.modifyUserInfo(loggedInUserId, userDTO);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/summary")
+    public ResponseEntity<List<UserSummaryDTO>> getAllUserSummaries(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        String loggedInUserId = customUserDetails.getUsername();
+        List<UserSummaryDTO> allUserSummaries = userService.getAllUserSummaries(loggedInUserId);
+        return ResponseEntity.ok(allUserSummaries);
     }
 
     @PutMapping("/profile")

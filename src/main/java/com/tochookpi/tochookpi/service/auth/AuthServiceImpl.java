@@ -33,15 +33,15 @@ public class AuthServiceImpl implements AuthService {
         // Refresh Token 검증
         if(!jwtValidator.isExpired(refreshToken, false)) {
             // 토큰의 username 조회
-            String username = jwtValidator.getUsername(refreshToken, false);
+            Long id = jwtValidator.getId(refreshToken, false);
 
-            // DB에서 role조회
-            UserEntity userEntity = userRepository.findByEmail(username)
+            // DB에서 UserEntity 조회
+            UserEntity userEntity = userRepository.findById(id)
                     .orElseThrow(() -> new TochookpiException(ErrorCode.EXPIRED_REFRESH_TOKEN));
 
             String role = userEntity.getRole().name();
 
-            return jwtProvider.createAccessJwt(username, role, 60*60*10L);
+            return jwtProvider.createAccessJwt(String.valueOf(id), role, 60*60*10L);
         }
 
         throw new TochookpiException(ErrorCode.EXPIRED_REFRESH_TOKEN);

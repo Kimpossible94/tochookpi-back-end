@@ -54,11 +54,11 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         GrantedAuthority auth = iterator.next();
 
         String role = auth.getAuthority();
-        String username = userDetails.getUsername();
+        String id = userDetails.getUsername();
         // username, role로 1시간(60*60*1000L) 동안 유효한 JWT 생성
-        String accessToken = jwtProvider.createAccessJwt(username, role, 60*60*1000L);
+        String accessToken = jwtProvider.createAccessJwt(id, role, 60*60*1000L);
         // username으로 7일(60*60*24*7000L) 동안 유효한 JWT 생성
-        String refreshToken = jwtProvider.createRefreshJwt(username, 60*60*24*7000L);
+        String refreshToken = jwtProvider.createRefreshJwt(id, 60*60*24*7000L);
         // 응답 헤더에 Authorization으로 토큰 설정
         response.addHeader("Authorization", "Bearer " + accessToken);
         // 리프레시 토큰 쿠키에 추가

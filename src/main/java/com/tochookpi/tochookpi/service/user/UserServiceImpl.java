@@ -2,6 +2,7 @@ package com.tochookpi.tochookpi.service.user;
 
 import com.tochookpi.tochookpi.dto.user.UserAuthDTO;
 import com.tochookpi.tochookpi.dto.user.UserDTO;
+import com.tochookpi.tochookpi.dto.user.UserSummaryDTO;
 import com.tochookpi.tochookpi.entity.MeetingEntity;
 import com.tochookpi.tochookpi.entity.MeetingParticipantEntity;
 import com.tochookpi.tochookpi.entity.UserEntity;
@@ -10,7 +11,6 @@ import com.tochookpi.tochookpi.enums.ErrorCode;
 import com.tochookpi.tochookpi.enums.Role;
 import com.tochookpi.tochookpi.exception.S3OrphanFileException;
 import com.tochookpi.tochookpi.exception.TochookpiException;
-import com.tochookpi.tochookpi.repository.MeetingParticipantRepository;
 import com.tochookpi.tochookpi.repository.MeetingRepository;
 import com.tochookpi.tochookpi.repository.UserRepository;
 import com.tochookpi.tochookpi.service.storage.S3Service;
@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -58,14 +59,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO getUserInfo(String email) {
-        UserEntity userEntity = userRepository.findByEmail(email).orElseThrow(() -> new TochookpiException(ErrorCode.USER_NOT_FOUND));
+    public UserDTO getUserInfo(String id) {
+        UserEntity userEntity = userRepository.findById(Long.parseLong(id))
+                .orElseThrow(() -> new TochookpiException(ErrorCode.USER_NOT_FOUND));
         return new UserDTO(userEntity);
     }
 
     @Override
-    public void modifyUserInfo(String loggedInUserEmail, UserDTO userDTO) {
-        UserEntity userEntity = userRepository.findByEmail(loggedInUserEmail).orElseThrow(() -> new TochookpiException(ErrorCode.USER_NOT_FOUND));
+    public void modifyUserInfo(String loggedInUserId, UserDTO userDTO) {
+        UserEntity userEntity = userRepository.findById(Long.parseLong(loggedInUserId))
+                .orElseThrow(() -> new TochookpiException(ErrorCode.USER_NOT_FOUND));
 
         userEntity.setAddress(userDTO.getAddress());
         userEntity.setBio(userDTO.getBio());
@@ -74,8 +77,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String modifyUserProfile(String loggedInUserEmail, MultipartFile multipartFile) {
-        UserEntity userEntity = userRepository.findByEmail(loggedInUserEmail).orElseThrow(() -> new TochookpiException(ErrorCode.USER_NOT_FOUND));
+    public List<UserSummaryDTO> getAllUserSummaries(String loggedInUserId) {
+        return userRepository.findAll().stream()
+                .filter(userEntity -> !userEntity.getId().equals(Long.parseLong(loggedInUserId)))
+                .map(UserSummaryDTO::new).collect(Collectors.toList());
+    }
+
+    @Override
+    public String modifyUserProfile(String loggedInUserId, MultipartFile multipartFile) {
+        UserEntity userEntity = userRepository.findById(Long.parseLong(loggedInUserId))
+                .orElseThrow(() -> new TochookpiException(ErrorCode.USER_NOT_FOUND));
 
         String profileUrl = s3Service.uploadFile(multipartFile, "profile");
         userEntity.setProfileImage(profileUrl);
@@ -90,8 +101,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(String loggedInUserEmail) {
-        UserEntity userEntity = userRepository.findByEmail(loggedInUserEmail).orElseThrow(() -> new TochookpiException(ErrorCode.USER_NOT_FOUND));
+    public void deleteUser(String loggedInUserId) {
+        UserEntity userEntity = userRepository.findById(Long.parseLong(loggedInUserId))
+                .orElseThrow(() -> new TochookpiException(ErrorCode.USER_NOT_FOUND));
 
         userRepository.delete(userEntity);
 
