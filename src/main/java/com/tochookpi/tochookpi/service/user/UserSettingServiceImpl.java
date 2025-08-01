@@ -20,9 +20,9 @@ public class UserSettingServiceImpl implements UserSettingService {
     }
 
     @Override
-    public UserSettingDTO getUserSetting(String loggedInUserEmail) {
-        UserEntity userEntity = userRepository.findByEmail(loggedInUserEmail).orElseThrow(() ->
-                new TochookpiException(ErrorCode.USER_NOT_FOUND));
+    public UserSettingDTO getUserSetting(String loggedInUserId) {
+        UserEntity userEntity = userRepository.findById(Long.parseLong(loggedInUserId))
+                .orElseThrow(() -> new TochookpiException(ErrorCode.USER_NOT_FOUND));
 
         UserSettingEntity userSettingEntity = userSettingRepository.findById(userEntity.getUserSetting().getId()).orElseThrow(() ->
                 new TochookpiException(ErrorCode.FAIL_MODIFY_USER_SETTING));
@@ -31,9 +31,9 @@ public class UserSettingServiceImpl implements UserSettingService {
     }
 
     @Override
-    public void modifyUserSetting(String loggedInUserEmail, UserSettingDTO userSettingDTO) {
-        UserEntity userEntity = userRepository.findByEmail(loggedInUserEmail).orElseThrow(() ->
-                new TochookpiException(ErrorCode.USER_NOT_FOUND));
+    public void modifyUserSetting(String loggedInUserId, UserSettingDTO userSettingDTO) {
+        UserEntity userEntity = userRepository.findById(Long.parseLong(loggedInUserId))
+                .orElseThrow(() -> new TochookpiException(ErrorCode.USER_NOT_FOUND));
 
         UserSettingEntity userSettingEntity = new UserSettingEntity(
                 userEntity.getUserSetting().getId(),

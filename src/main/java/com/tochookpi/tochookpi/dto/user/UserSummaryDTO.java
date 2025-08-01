@@ -11,26 +11,14 @@ import lombok.Setter;
 @AllArgsConstructor
 @Setter
 @Getter
-public class UserDTO {
+public class UserSummaryDTO {
     private Long id;
     private String username;
-    private String email;
     private String profileImage;
-    private String bio;
-    private String address;
-    private UserSettingDTO userSetting;
 
-    public UserDTO(UserEntity userEntity) {
+    public UserSummaryDTO(UserEntity userEntity) {
         this.id = userEntity.getId();
         this.username = userEntity.getName();
-        this.email = userEntity.getEmail();
         this.profileImage = userEntity.getProfileImage();
-        this.bio = userEntity.getBio();
-        this.address = userEntity.getAddress();
-
-        UserSettingEntity setting = userEntity.getUserSetting();
-        if (setting != null) {
-            this.userSetting = new UserSettingDTO(setting.isNotificationDisabled(), setting.isInviteDisabled());
-        }
     }
 }

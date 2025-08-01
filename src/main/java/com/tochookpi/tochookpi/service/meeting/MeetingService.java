@@ -1,6 +1,7 @@
 package com.tochookpi.tochookpi.service.meeting;
 
-import com.tochookpi.tochookpi.dto.meeting.MeetingDTO;
+import com.tochookpi.tochookpi.dto.meeting.MeetingRequestDTO;
+import com.tochookpi.tochookpi.dto.meeting.MeetingResponseDTO;
 import com.tochookpi.tochookpi.enums.MeetingCategory;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -8,15 +9,17 @@ import java.util.List;
 
 public interface MeetingService {
 
-    void createMeeting(String loggedInUserEmail, MultipartFile image, MeetingDTO meetingDTO);
+    void createMeeting(String loggedInUserId, MultipartFile image, MeetingRequestDTO meetingDTO);
 
-    List<MeetingDTO> getMeetings(String loggedInUserEmail, String searchTerm, List<MeetingCategory> category, String sort, String type);
+    List<MeetingResponseDTO> getMeetings(String loggedInUserId, String searchTerm, List<MeetingCategory> category, String sort, String type);
 
-    MeetingDTO getMeetingById(String loggedInUserEmail, Long id);
+    MeetingResponseDTO getMeetingById(String loggedInUserId, Long id);
 
-    void joinMeeting(String loggedInUserEmail, Long id);
+    void modifyMeeting(String loggedInUserId, Long id, MultipartFile image, MeetingRequestDTO newMeeting);
 
-    void leaveMeeting(String loggedInUserEmail, Long id);
+    void joinMeeting(String loggedInUserId, Long id);
 
-    void deleteMeeting(String loggedInUserEmail, Long id);
+    void leaveMeeting(String loggedInUserId, Long id);
+
+    void deleteMeeting(String loggedInUserId, Long id);
 }

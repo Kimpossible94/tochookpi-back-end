@@ -54,7 +54,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneralException(Exception e, HttpServletRequest request) {
         ErrorResponse errorResponse = setErrorResponse(request, ErrorCode.INTERNAL_SERVER_ERROR);
-
+        e.printStackTrace();
         return ResponseEntity
                 .status(ErrorCode.INTERNAL_SERVER_ERROR.getHttpStatus())
                 .body(errorResponse);

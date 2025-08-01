@@ -1,6 +1,8 @@
 package com.tochookpi.tochookpi.entity;
 
-import com.tochookpi.tochookpi.dto.meeting.MeetingDTO;
+import com.tochookpi.tochookpi.dto.meeting.LocationDTO;
+import com.tochookpi.tochookpi.dto.meeting.MeetingRequestDTO;
+import com.tochookpi.tochookpi.dto.meeting.MeetingResponseDTO;
 import com.tochookpi.tochookpi.dto.user.UserDTO;
 import com.tochookpi.tochookpi.enums.MeetingCategory;
 import com.tochookpi.tochookpi.enums.MeetingStatus;
@@ -41,12 +43,6 @@ public class MeetingEntity {
     private String image;
 
     @Column(nullable = false)
-    private int maxParticipantsCnt;
-
-    @Column(nullable = false)
-    private int currentParticipantsCnt;
-
-    @Column(nullable = false)
     private LocalDate startDate;
 
     @Column(nullable = false)
@@ -58,9 +54,6 @@ public class MeetingEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private MeetingStatus status;
-
-    @OneToMany(mappedBy = "meeting", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MeetingScheduleEntity> schedules = new ArrayList<>();
 
     @OneToMany(mappedBy = "meeting", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MeetingParticipantEntity> participants = new ArrayList<>();
@@ -76,50 +69,27 @@ public class MeetingEntity {
         this.createdAt = LocalDateTime.now();
     }
 
-    public MeetingDTO toDTO() {
-        MeetingDTO dto = new MeetingDTO();
+    public MeetingResponseDTO toDTO() {
+        MeetingResponseDTO dto = new MeetingResponseDTO();
         dto.setId(this.id);
         dto.setTitle(this.title);
         dto.setDescription(this.description);
         dto.setCategory(this.category);
         dto.setImage(this.image);
         dto.setOrganizer(new UserDTO(this.organizer));
-        dto.setMaxParticipantsCnt(this.maxParticipantsCnt);
-        dto.setCurrentParticipantsCnt(this.currentParticipantsCnt);
         dto.setStartDate(this.startDate);
         dto.setEndDate(this.endDate);
         dto.setStatus(this.status);
 
         // Location 변환
-        MeetingDTO.LocationDTO locationDTO = new MeetingDTO.LocationDTO();
-        locationDTO.setTitle(this.location.getTitle());
-        locationDTO.setAddress(this.location.getAddress());
-        locationDTO.setLng(this.location.getLng());
-        locationDTO.setLat(this.location.getLat());
-        dto.setLocation(locationDTO);
-
-        // Schedule 변환
-        List<MeetingDTO.ScheduleDTO> scheduleDTOList = this.schedules.stream()
-                .collect(Collectors.groupingBy(s -> s.getDate().toString()))
-                .entrySet().stream()
-                .map(entry -> {
-                    MeetingDTO.ScheduleDTO scheduleDTO = new MeetingDTO.ScheduleDTO();
-                    scheduleDTO.setDate(entry.getKey());
-
-                    List<MeetingDTO.ScheduleDTO.EventDTO> eventDTOs = entry.getValue().stream()
-                            .map(schedule -> {
-                                MeetingDTO.ScheduleDTO.EventDTO eventDTO = new MeetingDTO.ScheduleDTO.EventDTO();
-                                eventDTO.setStartTime(schedule.getStartTime().toString());
-                                eventDTO.setEndTime(schedule.getEndTime().toString());
-                                eventDTO.setDescription(schedule.getDescription());
-                                return eventDTO;
-                            }).toList();
-
-                    scheduleDTO.setEvents(eventDTOs);
-                    return scheduleDTO;
-                }).toList();
-
-        dto.setSchedules(scheduleDTOList);
+        if (this.location != null) {
+            LocationDTO locationDTO = new LocationDTO();
+            locationDTO.setTitle(this.location.getTitle());
+            locationDTO.setAddress(this.location.getAddress());
+            locationDTO.setLng(this.location.getLng());
+            locationDTO.setLat(this.location.getLat());
+            dto.setLocation(locationDTO);
+        }
 
         // participants 변환
         dto.setParticipants(this.participants.stream()

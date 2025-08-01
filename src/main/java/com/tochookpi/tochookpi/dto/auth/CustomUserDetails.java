@@ -26,10 +26,9 @@ public class CustomUserDetails implements UserDetails {
         return userEntity.getPassword();
     }
 
-    // email을 로그인 아이디로 사용하기 때문에 getEmail()을 사용
     @Override
     public String getUsername() {
-        return userEntity.getEmail();
+        return String.valueOf(userEntity.getId());
     }
 
     @Override

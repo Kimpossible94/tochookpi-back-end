@@ -32,7 +32,8 @@ public class JwtFilter extends OncePerRequestFilter {
             return true;
         } else if ("/users".equals(path) && "POST".equalsIgnoreCase(method)) {
             return true;
-        } else if ("/auth/verification-code".equals(path) || "/auth/verification-code/verify".equals(path) || "/auth/refresh".equals(path)) {
+        } else if ("/auth/verification-code".equals(path) || "/auth/verification-code/verify".equals(path)
+                || "/auth/refresh".equals(path) || "/auth/logout".equals(path)) {
             return true;
         } else if (path.contains("/swagger-ui/") || path.contains("/v3/api-docs")) {
             return true;
@@ -49,12 +50,12 @@ public class JwtFilter extends OncePerRequestFilter {
         if (token == null) throw new TochookpiException(ErrorCode.TOKEN_NOT_PROVIDED);
 
         if (!jwtValidator.isExpired(token, true)) {
-            String username = jwtValidator.getUsername(token, true);
+            Long id = jwtValidator.getId(token, true);
             String role = jwtValidator.getRole(token, true);
             Role roleEnum = Role.valueOf(role);
 
             UserEntity userEntity = new UserEntity();
-            userEntity.setEmail(username);
+            userEntity.setId(id);
             userEntity.setPassword(null);
             userEntity.setRole(roleEnum);
 

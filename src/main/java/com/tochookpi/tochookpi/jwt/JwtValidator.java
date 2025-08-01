@@ -22,10 +22,10 @@ public class JwtValidator {
         this.refreshSecretKey = new SecretKeySpec(refreshSecretKey.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
     }
 
-    public String getUsername(String token, boolean isAccessToken) {
-        // JWT에서 사용자 이름을 추출
+    public Long getId(String token, boolean isAccessToken) {
+        // JWT에서 사용자 ID 추출
         SecretKey key = isAccessToken ? accessSecretKey : refreshSecretKey;
-        return Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload().get("username", String.class);
+        return Long.parseLong(Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload().getSubject());
     }
 
     public String getRole(String token, boolean isAccessToken) {

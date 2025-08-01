@@ -1,7 +1,8 @@
 package com.tochookpi.tochookpi.controller;
 
 import com.tochookpi.tochookpi.dto.auth.CustomUserDetails;
-import com.tochookpi.tochookpi.dto.meeting.MeetingDTO;
+import com.tochookpi.tochookpi.dto.meeting.MeetingRequestDTO;
+import com.tochookpi.tochookpi.dto.meeting.MeetingResponseDTO;
 import com.tochookpi.tochookpi.enums.MeetingCategory;
 import com.tochookpi.tochookpi.service.meeting.MeetingService;
 import org.springframework.http.ResponseEntity;
@@ -23,52 +24,62 @@ public class MeetingController {
     @PostMapping
     public ResponseEntity<Void> createMeeting(@AuthenticationPrincipal CustomUserDetails customUserDetails,
                                               @RequestPart(value = "image", required = false) MultipartFile image,
-                                              @RequestPart("meeting") MeetingDTO meetingDTO) {
+                                              @RequestPart("meeting") MeetingRequestDTO meetingDTO) {
 
-        String loggedInUserEmail = customUserDetails.getUsername();
-        meetingService.createMeeting(loggedInUserEmail, image, meetingDTO);
+        String loggedInUserId = customUserDetails.getUsername();
+        meetingService.createMeeting(loggedInUserId, image, meetingDTO);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping
-    public ResponseEntity<List<MeetingDTO>> getMeetings(@AuthenticationPrincipal CustomUserDetails customUserDetails,
-                                                        @RequestParam(required = false) String searchTerm,
-                                                        @RequestParam(required = false) List<MeetingCategory> category,
-                                                        @RequestParam(required = false) String sort,
-                                                        @RequestParam(required = false) String type)
+    public ResponseEntity<List<MeetingResponseDTO>> getMeetings(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+                                                                    @RequestParam(required = false) String searchTerm,
+                                                                    @RequestParam(required = false) List<MeetingCategory> category,
+                                                                    @RequestParam(required = false) String sort,
+                                                                    @RequestParam(required = false) String type)
     {
-        String loggedInUserEmail = customUserDetails.getUsername();
-        return ResponseEntity.ok(meetingService.getMeetings(loggedInUserEmail, searchTerm, category, sort, type));
+        String loggedInUserId = customUserDetails.getUsername();
+        return ResponseEntity.ok(meetingService.getMeetings(loggedInUserId, searchTerm, category, sort, type));
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<MeetingDTO> getMeetingById(@AuthenticationPrincipal CustomUserDetails customUserDetails,
-                                                     @PathVariable("id") Long id) {
-        String loggedInUserEmail = customUserDetails.getUsername();
-        return ResponseEntity.ok(meetingService.getMeetingById(loggedInUserEmail, id));
+    public ResponseEntity<MeetingResponseDTO> getMeetingById(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+                                                            @PathVariable("id") Long id) {
+        String loggedInUserId = customUserDetails.getUsername();
+        return ResponseEntity.ok(meetingService.getMeetingById(loggedInUserId, id));
+    }
+
+    @PutMapping("{id}")
+    public ResponseEntity<MeetingResponseDTO> modifyMeeting(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+                                                            @PathVariable("id") Long id,
+                                                            @RequestPart(value = "image", required = false) MultipartFile image,
+                                                            @RequestPart("meeting") MeetingRequestDTO newMeeting) {
+        String loggedInUserId = customUserDetails.getUsername();
+        meetingService.modifyMeeting(loggedInUserId, id, image, newMeeting);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("{id}/join")
     public ResponseEntity<Void> joinMeeting(@AuthenticationPrincipal CustomUserDetails customUserDetails,
                                             @PathVariable("id") Long id) {
-        String loggedInUserEmail = customUserDetails.getUsername();
-        meetingService.joinMeeting(loggedInUserEmail, id);
+        String loggedInUserId = customUserDetails.getUsername();
+        meetingService.joinMeeting(loggedInUserId, id);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("{id}/leave")
     public ResponseEntity<Void> leaveMeeting(@AuthenticationPrincipal CustomUserDetails customUserDetails,
                                             @PathVariable("id") Long id) {
-        String loggedInUserEmail = customUserDetails.getUsername();
-        meetingService.leaveMeeting(loggedInUserEmail, id);
+        String loggedInUserId = customUserDetails.getUsername();
+        meetingService.leaveMeeting(loggedInUserId, id);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("{id}")
     public ResponseEntity<Void> deleteMeeting(@AuthenticationPrincipal CustomUserDetails customUserDetails,
                                               @PathVariable("id") Long id) {
-        String loggedInUserEmail = customUserDetails.getUsername();
-        meetingService.deleteMeeting(loggedInUserEmail, id);
+        String loggedInUserId = customUserDetails.getUsername();
+        meetingService.deleteMeeting(loggedInUserId, id);
 
         return ResponseEntity.ok().build();
     }
