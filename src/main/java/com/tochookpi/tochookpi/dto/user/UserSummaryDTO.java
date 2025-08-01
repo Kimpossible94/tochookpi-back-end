@@ -1,7 +1,6 @@
 package com.tochookpi.tochookpi.dto.user;
 
 import com.tochookpi.tochookpi.entity.UserEntity;
-import com.tochookpi.tochookpi.entity.UserSettingEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

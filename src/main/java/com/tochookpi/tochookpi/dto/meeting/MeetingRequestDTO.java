@@ -1,8 +1,6 @@
 package com.tochookpi.tochookpi.dto.meeting;
 
-import com.tochookpi.tochookpi.entity.Location;
 import com.tochookpi.tochookpi.entity.MeetingEntity;
-import com.tochookpi.tochookpi.entity.MeetingParticipantEntity;
 import com.tochookpi.tochookpi.entity.UserEntity;
 import com.tochookpi.tochookpi.enums.MeetingCategory;
 import com.tochookpi.tochookpi.enums.MeetingStatus;
