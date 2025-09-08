@@ -67,6 +67,19 @@ public class MeetingReviewServiceImpl implements MeetingReviewService {
             throw new TochookpiException(ErrorCode.MEETING_FAIL_SAVE_MEETING);
         }
     }
+
+    @Override
+    public void deleteMeetingReview(String loggedInUserId, Long id) {
+        UserEntity userEntity = userRepository.findById(Long.parseLong(loggedInUserId))
+                .orElseThrow(() -> new TochookpiException(ErrorCode.USER_NOT_FOUND));
+
+        MeetingReviewEntity meetingReviewEntity = meetingReviewRepository.findById(id)
+                .orElseThrow(() -> new TochookpiException(ErrorCode.REVIEW_NOT_FOUND));
+
+        if(!meetingReviewEntity.getWriter().getId().equals(loggedInUserId)) new TochookpiException(ErrorCode.REVIEW_ONLY_WRITER);
+
+        meetingReviewRepository.delete(meetingReviewEntity);
+    }
 }
 
 

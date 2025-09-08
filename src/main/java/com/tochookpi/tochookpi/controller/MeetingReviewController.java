@@ -26,4 +26,12 @@ public class MeetingReviewController {
         meetingReviewService.createMeetingReview(loggedInUserId, files, meetingReviewRequestDTO);
         return ResponseEntity.ok().build();
     }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void> deleteMeetingReview(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+                                                    @PathVariable("id") Long id) {
+        String loggedInUserId = customUserDetails.getUsername();
+        meetingReviewService.deleteMeetingReview(loggedInUserId, id);
+        return ResponseEntity.ok().build();
+    }
 }

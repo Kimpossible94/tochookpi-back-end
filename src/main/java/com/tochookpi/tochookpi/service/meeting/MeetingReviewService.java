@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface MeetingReviewService {
     void createMeetingReview(String loggedInUserId, List<MultipartFile> files, MeetingReviewRequestDTO meetingReviewRequestDTO);
+
+    void deleteMeetingReview(String loggedInUserId, Long id);
 }
