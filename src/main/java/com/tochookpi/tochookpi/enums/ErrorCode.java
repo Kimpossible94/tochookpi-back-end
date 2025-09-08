@@ -47,7 +47,11 @@ public enum ErrorCode {
     MEETING_NOT_JOINED(HttpStatus.BAD_REQUEST, "MEETING-006", "참여한 모임이 아님"),
     MEETING_ORGANIZER_CANNOT_LEAVE(HttpStatus.BAD_REQUEST, "MEETING-007", "주최자는 모임을 나갈 수 없음"),
     MEETING_FAIL_SAVE_MEETING(HttpStatus.INTERNAL_SERVER_ERROR, "MEETING-008", "모임 저장 실패"),
-    MEETING_ONLY_ORGANIZER(HttpStatus.FORBIDDEN, "MEETING-009", "해당 기능은 주최자만 사용 가능");
+    MEETING_ONLY_ORGANIZER(HttpStatus.FORBIDDEN, "MEETING-009", "해당 기능은 주최자만 사용 가능"),
+
+    REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "REVIEW-001", "모임 리뷰를 찾을 수 없습니다."),
+    REVIEW_ALREADY_DELETED(HttpStatus.BAD_REQUEST, "REVIEW-002", "이미 삭제된 리뷰입니다."),
+    REVIEW_ONLY_WRITER(HttpStatus.FORBIDDEN, "REVIEW-003", "해당 기능은 작성자만 리뷰 작성자만 이용 가능");
 
     private final HttpStatus httpStatus;
     private final String code;

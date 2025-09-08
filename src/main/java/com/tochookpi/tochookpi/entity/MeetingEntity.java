@@ -1,7 +1,6 @@
 package com.tochookpi.tochookpi.entity;
 
 import com.tochookpi.tochookpi.dto.meeting.LocationDTO;
-import com.tochookpi.tochookpi.dto.meeting.MeetingRequestDTO;
 import com.tochookpi.tochookpi.dto.meeting.MeetingResponseDTO;
 import com.tochookpi.tochookpi.dto.user.UserDTO;
 import com.tochookpi.tochookpi.enums.MeetingCategory;
@@ -94,6 +93,11 @@ public class MeetingEntity {
         // participants 변환
         dto.setParticipants(this.participants.stream()
                 .map(participant -> new UserDTO(participant.getUser()))
+                .collect(Collectors.toList()));
+
+        // review 변환
+        dto.setReviews(this.reviews.stream()
+                .map(review -> review.toDTO())
                 .collect(Collectors.toList()));
 
         return dto;

@@ -1,12 +1,8 @@
 package com.tochookpi.tochookpi.controller;
 
 import com.tochookpi.tochookpi.dto.auth.CustomUserDetails;
-import com.tochookpi.tochookpi.dto.meeting.MeetingRequestDTO;
-import com.tochookpi.tochookpi.dto.meeting.MeetingResponseDTO;
-import com.tochookpi.tochookpi.dto.meeting.MeetingReviewDTO;
-import com.tochookpi.tochookpi.enums.MeetingCategory;
+import com.tochookpi.tochookpi.dto.meeting.MeetingReviewRequestDTO;
 import com.tochookpi.tochookpi.service.meeting.MeetingReviewService;
-import com.tochookpi.tochookpi.service.meeting.MeetingService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -24,10 +20,10 @@ public class MeetingReviewController {
     @PostMapping
     public ResponseEntity<Void> createMeetingReview(@AuthenticationPrincipal CustomUserDetails customUserDetails,
                                               @RequestPart(value = "files", required = false) List<MultipartFile> files,
-                                              @RequestPart("review") MeetingReviewDTO meetingReviewDTO) {
+                                              @RequestPart("review") MeetingReviewRequestDTO meetingReviewRequestDTO) {
 
         String loggedInUserId = customUserDetails.getUsername();
-        meetingReviewService.createMeetingReview(loggedInUserId, files, meetingReviewDTO);
+        meetingReviewService.createMeetingReview(loggedInUserId, files, meetingReviewRequestDTO);
         return ResponseEntity.ok().build();
     }
 }

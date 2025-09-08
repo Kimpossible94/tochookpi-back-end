@@ -5,7 +5,6 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.tochookpi.tochookpi.dto.meeting.LocationDTO;
 import com.tochookpi.tochookpi.dto.meeting.MeetingRequestDTO;
 import com.tochookpi.tochookpi.dto.meeting.MeetingResponseDTO;
 import com.tochookpi.tochookpi.entity.*;
@@ -24,7 +23,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
