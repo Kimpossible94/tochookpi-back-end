@@ -4,7 +4,9 @@ import com.tochookpi.tochookpi.dto.meeting.MeetingReviewResponseDTO;
 import com.tochookpi.tochookpi.dto.user.UserDTO;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SoftDelete;
+import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -18,6 +20,8 @@ import java.util.stream.Collectors;
 @Setter
 @Getter
 @Builder
+@SQLDelete(sql = "UPDATE meeting_reviews SET deleted_at = NOW() WHERE id = ?")
+@Where(clause = "deleted_at IS NULL")
 public class MeetingReviewEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,6 +43,9 @@ public class MeetingReviewEntity {
 
     @Column(name = "created_at", updatable = false, nullable = false)
     private LocalDateTime createdAt;
+
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
 
     public void addFile(ReviewFileEntity file) {
         this.files.add(file);

@@ -86,4 +86,5 @@ public class MeetingReviewServiceImpl implements MeetingReviewService {
 // TODO: 모임후기 목록 불러오기 미팅 불러올 때 확인
 // TODO: 모임후기 entity 타입 추가(이미지, 영상) (완료)
 // TODO: 모임 후기 수정
-// TODO: 모임 후기 삭제
+// TODO: 모임 후기 삭제 (완료)
+// TODO: 모임, 모임후기 논리 삭제로 변경
