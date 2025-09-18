@@ -40,6 +40,7 @@ public class ReviewFileEntity {
 
     public ReviewFileDTO toDTO() {
         return ReviewFileDTO.builder()
+                .id(this.id)
                 .url(this.url)
                 .type(this.type)
                 .build();

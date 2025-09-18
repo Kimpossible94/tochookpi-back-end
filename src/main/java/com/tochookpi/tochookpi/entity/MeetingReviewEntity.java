@@ -51,6 +51,7 @@ public class MeetingReviewEntity {
         this.files.add(file);
         file.setReview(this);
     }
+
     public MeetingReviewResponseDTO toDTO() {
         UserDTO userDTO = new UserDTO();
         userDTO.setId(this.writer.getId());

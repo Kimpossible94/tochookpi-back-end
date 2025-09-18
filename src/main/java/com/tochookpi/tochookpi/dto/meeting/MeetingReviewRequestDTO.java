@@ -20,7 +20,7 @@ public class MeetingReviewRequestDTO {
     private Long id;
     private Long meetingId;
     private Long writerId;
-    private List<ReviewFileDTO> files;
+    private List<ReviewFileDTO> reviewFiles;
     private String comments;
     private LocalDateTime createdAt;
 
@@ -33,8 +33,8 @@ public class MeetingReviewRequestDTO {
                 .createdAt(LocalDateTime.now())
                 .build();
 
-        if (this.files != null && !this.files.isEmpty()) {
-            this.files.forEach(fileDTO -> meetingReviewEntity.addFile(fileDTO.toEntity()));
+        if (this.reviewFiles != null && !this.reviewFiles.isEmpty()) {
+            this.reviewFiles.forEach(fileDTO -> meetingReviewEntity.addFile(fileDTO.toEntity()));
         }
 
         return meetingReviewEntity;
