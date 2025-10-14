@@ -1,6 +1,7 @@
 package com.tochookpi.tochookpi.service.meeting;
 
 import com.tochookpi.tochookpi.dto.meeting.MeetingReviewRequestDTO;
+import com.tochookpi.tochookpi.dto.meeting.MeetingReviewResponseDTO;
 import com.tochookpi.tochookpi.dto.meeting.ReviewFileDTO;
 import com.tochookpi.tochookpi.entity.MeetingEntity;
 import com.tochookpi.tochookpi.entity.MeetingReviewEntity;
@@ -119,5 +120,14 @@ public class MeetingReviewServiceImpl implements MeetingReviewService {
             ReviewFileEntity entity = dto.toEntity();
             review.addFile(entity); // 연관관계 편의 메서드 사용
         }
+    }
+
+    public List<MeetingReviewResponseDTO> getReviewsByMeeting(Long meetingId) {
+        MeetingEntity meetingEntity = meetingService.getMeetingEntity(meetingId);
+
+        return meetingReviewRepository.findByMeeting(meetingEntity)
+                .stream()
+                .map(MeetingReviewEntity::toDTO)
+                .toList();
     }
 }

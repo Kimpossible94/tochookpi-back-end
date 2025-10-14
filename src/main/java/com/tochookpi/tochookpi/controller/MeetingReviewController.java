@@ -2,6 +2,7 @@ package com.tochookpi.tochookpi.controller;
 
 import com.tochookpi.tochookpi.dto.auth.CustomUserDetails;
 import com.tochookpi.tochookpi.dto.meeting.MeetingReviewRequestDTO;
+import com.tochookpi.tochookpi.dto.meeting.MeetingReviewResponseDTO;
 import com.tochookpi.tochookpi.service.meeting.MeetingReviewService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -43,5 +44,11 @@ public class MeetingReviewController {
         String loggedInUserId = customUserDetails.getUsername();
         meetingReviewService.modifyMeetingReview(loggedInUserId, id, files, meetingReviewRequestDTO);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/meeting/{meetingId}")
+    public ResponseEntity<List<MeetingReviewResponseDTO>> getReviewsByMeeting(@PathVariable("meetingId") Long meetingId) {
+        List<MeetingReviewResponseDTO> reviews = meetingReviewService.getReviewsByMeeting(meetingId);
+        return ResponseEntity.ok(reviews);
     }
 }

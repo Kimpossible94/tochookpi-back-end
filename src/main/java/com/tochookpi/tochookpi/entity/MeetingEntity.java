@@ -104,7 +104,7 @@ public class MeetingEntity {
 
         // review 변환
         dto.setReviews(this.reviews.stream()
-                .map(review -> review.toDTO())
+                .map(MeetingReviewEntity::toDTO)
                 .collect(Collectors.toList()));
 
         return dto;
