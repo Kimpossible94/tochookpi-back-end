@@ -27,5 +27,6 @@ public class MeetingResponseDTO {
     private LocalDate endDate;
     private MeetingStatus status;
     private List<UserDTO> participants;
+    private List<MeetingReviewResponseDTO> reviews;
     private boolean isParticipating;
 }

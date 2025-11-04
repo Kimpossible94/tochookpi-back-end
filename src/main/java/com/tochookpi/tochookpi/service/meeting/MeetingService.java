@@ -2,6 +2,7 @@ package com.tochookpi.tochookpi.service.meeting;
 
 import com.tochookpi.tochookpi.dto.meeting.MeetingRequestDTO;
 import com.tochookpi.tochookpi.dto.meeting.MeetingResponseDTO;
+import com.tochookpi.tochookpi.entity.MeetingEntity;
 import com.tochookpi.tochookpi.enums.MeetingCategory;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,4 +23,6 @@ public interface MeetingService {
     void leaveMeeting(String loggedInUserId, Long id);
 
     void deleteMeeting(String loggedInUserId, Long id);
+
+    MeetingEntity getMeetingEntity(Long id);
 }

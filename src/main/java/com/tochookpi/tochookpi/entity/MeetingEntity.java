@@ -1,13 +1,14 @@
 package com.tochookpi.tochookpi.entity;
 
 import com.tochookpi.tochookpi.dto.meeting.LocationDTO;
-import com.tochookpi.tochookpi.dto.meeting.MeetingRequestDTO;
 import com.tochookpi.tochookpi.dto.meeting.MeetingResponseDTO;
 import com.tochookpi.tochookpi.dto.user.UserDTO;
 import com.tochookpi.tochookpi.enums.MeetingCategory;
 import com.tochookpi.tochookpi.enums.MeetingStatus;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -22,6 +23,8 @@ import java.util.stream.Collectors;
 @Setter
 @Getter
 @Builder
+@SQLDelete(sql = "UPDATE meetings SET deleted_at = NOW() WHERE id = ?")
+@Where(clause = "deleted_at IS NULL")
 public class MeetingEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -64,6 +67,9 @@ public class MeetingEntity {
     @Column(name = "created_at", updatable = false, nullable = false)
     private LocalDateTime createdAt;
 
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
@@ -94,6 +100,11 @@ public class MeetingEntity {
         // participants 변환
         dto.setParticipants(this.participants.stream()
                 .map(participant -> new UserDTO(participant.getUser()))
+                .collect(Collectors.toList()));
+
+        // review 변환
+        dto.setReviews(this.reviews.stream()
+                .map(MeetingReviewEntity::toDTO)
                 .collect(Collectors.toList()));
 
         return dto;

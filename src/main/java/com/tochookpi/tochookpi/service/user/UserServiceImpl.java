@@ -130,4 +130,10 @@ public class UserServiceImpl implements UserService {
 
         userRepository.delete(userEntity);
     }
+
+    @Override
+    public UserEntity getUserEntity(String id) {
+        return userRepository.findById(Long.parseLong(id))
+                .orElseThrow(() -> new TochookpiException(ErrorCode.USER_NOT_FOUND));
+    }
 }

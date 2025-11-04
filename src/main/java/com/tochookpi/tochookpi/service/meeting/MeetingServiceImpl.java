@@ -5,7 +5,6 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.tochookpi.tochookpi.dto.meeting.LocationDTO;
 import com.tochookpi.tochookpi.dto.meeting.MeetingRequestDTO;
 import com.tochookpi.tochookpi.dto.meeting.MeetingResponseDTO;
 import com.tochookpi.tochookpi.entity.*;
@@ -15,34 +14,29 @@ import com.tochookpi.tochookpi.enums.MeetingStatus;
 import com.tochookpi.tochookpi.enums.SortOption;
 import com.tochookpi.tochookpi.exception.S3OrphanFileException;
 import com.tochookpi.tochookpi.exception.TochookpiException;
-import com.tochookpi.tochookpi.repository.MeetingParticipantRepository;
 import com.tochookpi.tochookpi.repository.MeetingRepository;
-import com.tochookpi.tochookpi.repository.UserRepository;
 import com.tochookpi.tochookpi.service.storage.S3Service;
+import com.tochookpi.tochookpi.service.user.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
 public class MeetingServiceImpl implements MeetingService {
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final MeetingRepository meetingRepository;
     private final MeetingParticipantService meetingParticipantService;
-    private final MeetingParticipantRepository meetingParticipantRepository;
     private final S3Service s3Service;
     private final JPAQueryFactory queryFactory;
 
     @Override
     public void createMeeting(String loggedInUserId, MultipartFile image, MeetingRequestDTO meetingDTO) {
-        UserEntity userEntity = userRepository.findById(Long.parseLong(loggedInUserId))
-                .orElseThrow(() -> new TochookpiException(ErrorCode.USER_NOT_FOUND));
-
+        UserEntity userEntity = userService.getUserEntity(loggedInUserId);
         MeetingEntity meetingEntity = meetingDTO.toEntity(userEntity);
         setMeetingParticipant(userEntity, meetingEntity, meetingDTO.getParticipants());
         saveMeeting(image, meetingEntity);
@@ -66,8 +60,7 @@ public class MeetingServiceImpl implements MeetingService {
 
         // 모임 타입(생성한 또는 참여한)
         if(type != null && !type.equals("")) {
-            UserEntity userEntity = userRepository.findById(Long.parseLong(loggedInUserId))
-                    .orElseThrow(() -> new TochookpiException(ErrorCode.USER_NOT_FOUND));
+            UserEntity userEntity = userService.getUserEntity(loggedInUserId);
 
             if("created".equals(type)) {
                 predicate.and(meeting.organizer.eq(userEntity));
@@ -111,8 +104,7 @@ public class MeetingServiceImpl implements MeetingService {
 
     @Override
     public MeetingResponseDTO getMeetingById(String loggedInUserId, Long id) {
-        MeetingResponseDTO meetingDTO = meetingRepository.findById(id)
-                .orElseThrow(() -> new TochookpiException(ErrorCode.MEETING_NOT_FOUND)).toDTO();
+        MeetingResponseDTO meetingDTO = getMeetingEntity(id).toDTO();
 
         boolean isParticipating = meetingDTO.getParticipants().stream()
                 .anyMatch(participant -> participant.getId().equals(Long.parseLong(loggedInUserId)));
@@ -124,11 +116,8 @@ public class MeetingServiceImpl implements MeetingService {
 
     @Override
     public void modifyMeeting(String loggedInUserId, Long id, MultipartFile image, MeetingRequestDTO newMeeting) {
-        UserEntity userEntity = userRepository.findById(Long.parseLong(loggedInUserId))
-                .orElseThrow(() -> new TochookpiException(ErrorCode.USER_NOT_FOUND));
-
-        MeetingEntity meetingEntity = meetingRepository.findById(id)
-                .orElseThrow(() -> new TochookpiException(ErrorCode.MEETING_NOT_FOUND));
+        UserEntity userEntity = userService.getUserEntity(loggedInUserId);
+        MeetingEntity meetingEntity = getMeetingEntity(id);
 
         if(!meetingEntity.getOrganizer().getId().equals(loggedInUserId)) new TochookpiException(ErrorCode.MEETING_ONLY_ORGANIZER);
 
@@ -175,11 +164,8 @@ public class MeetingServiceImpl implements MeetingService {
 
     @Override
     public void joinMeeting(String loggedInUserId, Long id) {
-        UserEntity userEntity = userRepository.findById(Long.parseLong(loggedInUserId))
-                .orElseThrow(() -> new TochookpiException(ErrorCode.USER_NOT_FOUND));
-
-        MeetingEntity meetingEntity = meetingRepository.findById(id)
-                .orElseThrow(() -> new TochookpiException(ErrorCode.MEETING_NOT_FOUND));
+        UserEntity userEntity = userService.getUserEntity(loggedInUserId);
+        MeetingEntity meetingEntity = getMeetingEntity(id);
 
         if(MeetingStatus.ENDED.equals(meetingEntity.getStatus()))
             throw new TochookpiException(ErrorCode.MEETING_ALREADY_ENDED);
@@ -199,11 +185,8 @@ public class MeetingServiceImpl implements MeetingService {
 
     @Override
     public void leaveMeeting(String loggedInUserId, Long id) {
-        UserEntity userEntity = userRepository.findById(Long.parseLong(loggedInUserId))
-                .orElseThrow(() -> new TochookpiException(ErrorCode.USER_NOT_FOUND));
-
-        MeetingEntity meetingEntity = meetingRepository.findById(id)
-                .orElseThrow(() -> new TochookpiException(ErrorCode.MEETING_NOT_FOUND));
+        UserEntity userEntity = userService.getUserEntity(loggedInUserId);
+        MeetingEntity meetingEntity = getMeetingEntity(id);
 
         if(MeetingStatus.ENDED.equals(meetingEntity.getStatus()))
             throw new TochookpiException(ErrorCode.MEETING_ALREADY_ENDED);
@@ -211,24 +194,25 @@ public class MeetingServiceImpl implements MeetingService {
         if(meetingEntity.getOrganizer().equals(userEntity))
             throw new TochookpiException(ErrorCode.MEETING_ORGANIZER_CANNOT_LEAVE);
 
-        MeetingParticipantEntity meetingParticipantEntity = meetingParticipantRepository
-                .findByMeetingAndUser(meetingEntity, userEntity)
-                .orElseThrow(() -> new TochookpiException(ErrorCode.MEETING_NOT_JOINED));
-        meetingParticipantRepository.delete(meetingParticipantEntity);
+        List<MeetingParticipantEntity> participants = meetingEntity.getParticipants();
+        participants.removeIf(p -> p.getUser().getId().equals(userEntity.getId()));
 
         meetingRepository.save(meetingEntity);
     }
 
     @Override
     public void deleteMeeting(String loggedInUserId, Long id) {
-        UserEntity userEntity = userRepository.findById(Long.parseLong(loggedInUserId))
-                .orElseThrow(() -> new TochookpiException(ErrorCode.USER_NOT_FOUND));
-
-        MeetingEntity meetingEntity = meetingRepository.findById(id)
-                .orElseThrow(() -> new TochookpiException(ErrorCode.MEETING_NOT_FOUND));
+        UserEntity userEntity = userService.getUserEntity(loggedInUserId);
+        MeetingEntity meetingEntity = getMeetingEntity(id);
 
         if(!meetingEntity.getOrganizer().equals(userEntity)) throw new TochookpiException(ErrorCode.MEETING_ACCESS_DENIED);
 
         meetingRepository.delete(meetingEntity);
+    }
+
+    @Override
+    public MeetingEntity getMeetingEntity(Long id) {
+        return meetingRepository.findById(id)
+                .orElseThrow(() -> new TochookpiException(ErrorCode.MEETING_NOT_FOUND));
     }
 }
