@@ -140,8 +140,10 @@ public class MeetingServiceImpl implements MeetingService {
         meetingParticipantEntity.setUser(userEntity);
         meetingParticipantEntities.add(meetingParticipantEntity);
 
-        meetingEntity.getParticipants().clear();
-        meetingEntity.getParticipants().addAll(meetingParticipantEntities);
+        if(meetingEntity.getParticipants() != null) {
+            meetingEntity.getParticipants().clear();
+            meetingEntity.getParticipants().addAll(meetingParticipantEntities);
+        }
     }
 
     private void saveMeeting(MultipartFile image, MeetingEntity meetingEntity) {
