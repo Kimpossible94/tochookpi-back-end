@@ -59,9 +59,11 @@ public class MeetingEntity {
     private MeetingStatus status;
 
     @OneToMany(mappedBy = "meeting", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<MeetingParticipantEntity> participants = new ArrayList<>();
 
     @OneToMany(mappedBy = "meeting", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<MeetingReviewEntity> reviews = new ArrayList<>();
 
     @Column(name = "created_at", updatable = false, nullable = false)
