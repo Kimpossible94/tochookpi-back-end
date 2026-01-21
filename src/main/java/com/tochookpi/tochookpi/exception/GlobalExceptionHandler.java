@@ -6,6 +6,7 @@ import com.tochookpi.tochookpi.service.storage.S3Service;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingPathVariableException;
 import org.springframework.web.bind.MissingRequestCookieException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -50,6 +51,19 @@ public class GlobalExceptionHandler {
                 .body(errorResponse);
     }
 
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleValidationException(MethodArgumentNotValidException ex, HttpServletRequest request) {
+        String errorMessage = ex.getBindingResult()
+                .getAllErrors()
+                .get(0)
+                .getDefaultMessage();
+
+        ErrorResponse errorResponse = setErrorResponse(request, ErrorCode.INVALID_USER_INPUT, errorMessage);
+
+        return ResponseEntity
+                .status(ErrorCode.INVALID_USER_INPUT.getHttpStatus())
+                .body(errorResponse);
+    }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneralException(Exception e, HttpServletRequest request) {
@@ -61,13 +75,20 @@ public class GlobalExceptionHandler {
     }
 
     private ErrorResponse setErrorResponse(HttpServletRequest request, ErrorCode errorCode) {
-        ErrorResponse errorResponse = new ErrorResponse(
+        return new ErrorResponse(
                 errorCode.getHttpStatus(),
                 errorCode.getCode(),
                 errorCode.getMessage(),
                 request.getRequestURI()
         );
+    }
 
-        return errorResponse;
+    private ErrorResponse setErrorResponse(HttpServletRequest request, ErrorCode errorCode, String errorMessage) {
+        return new ErrorResponse(
+                errorCode.getHttpStatus(),
+                errorCode.getCode(),
+                errorMessage,
+                request.getRequestURI()
+        );
     }
 }

@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -38,6 +39,8 @@ public class MeetingRequestDTO {
                 .startDate(this.startDate)
                 .endDate(this.endDate)
                 .status(this.status != null ? this.status : MeetingStatus.BEFORE)
+                .participants(new ArrayList<>())
+                .reviews(new ArrayList<>())
                 .build();
 
         if(this.location != null) {
